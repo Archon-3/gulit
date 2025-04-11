@@ -35,7 +35,7 @@ const OnboardingPage = () => {
     {
       id: 3,
       name: "Laptop Ultra",
-      price: 1299.99,
+      price: 1299.90,
       image: "https://via.placeholder.com/200",
       discount: 20,
       rating: 4.7,
@@ -44,7 +44,7 @@ const OnboardingPage = () => {
     {
       id: 4,
       name: "Smart Watch",
-      price: 249.99,
+      price: 154.33,
       image: "https://via.placeholder.com/200",
       discount: 5,
       rating: 4.3,
@@ -53,7 +53,7 @@ const OnboardingPage = () => {
     {
       id: 5,
       name: "Wireless Earbuds",
-      price: 89.99,
+      price: 31.44,
       image: "https://via.placeholder.com/200",
       discount: 0,
       rating: 4.6,
@@ -62,7 +62,7 @@ const OnboardingPage = () => {
     {
       id: 6,
       name: "4K Smart TV",
-      price: 699.99,
+      price: 340.00,
       image: "https://via.placeholder.com/200",
       discount: 12,
       rating: 4.4,
