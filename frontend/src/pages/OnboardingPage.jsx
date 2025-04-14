@@ -115,7 +115,7 @@ export default function OnboardingPage() {
     <div className={`onboarding-container ${darkTheme ? "dark-theme" : "light-theme"}`}>
       <header className="header">
         <div className="logo">
-          <h1>TechShop</h1>
+          <h1>GULIT</h1>
         </div>
         <div className="search-bar">
           <Search className="search-icon" size={20} />
@@ -160,7 +160,7 @@ export default function OnboardingPage() {
       <main>
         <section className="hero-section">
           <div className="hero-content">
-            <h1>Welcome to TechShop</h1>
+            <h1>Welcome to Gulit</h1>
             <p>Discover the latest tech products at unbeatable prices</p>
             <button className="cta-button">Shop Now</button>
           </div>
@@ -243,7 +243,7 @@ export default function OnboardingPage() {
       <footer className="footer">
         <div className="footer-section">
           <h3>About Us</h3>
-          <p>TechShop is your one-stop destination for the latest technology products and accessories.</p>
+          <p>GULIT is your one-stop destination for the latest technology products and accessories.</p>
         </div>
         <div className="footer-section">
           <h3>Customer Service</h3>
@@ -265,7 +265,7 @@ export default function OnboardingPage() {
         </div>
         <div className="footer-section">
           <h3>Contact Info</h3>
-          <p>Email: support@techshop.com</p>
+          <p>Email: support@Gulitshop.com</p>
           <p>Phone: (555) 123-4567</p>
           <p>Address: 123 Tech Street, Digital City</p>
         </div>
