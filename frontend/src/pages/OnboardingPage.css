@@ -57,8 +57,12 @@ body {
   background-color: var(--background-main);
   color: var(--text-color);
   transition: background-color var(--transition-speed), color var(--transition-speed);
-  width: 100%;
+  width: 100vw; /* Changed from 100% to 100vw to ensure full viewport width */
+  height: 100vh; /* Added height: 100vh for full viewport height */
   overflow-x: hidden;
+  position: fixed; /* Added fixed position to ensure it covers the entire screen */
+  top: 0;
+  left: 0;
 }
 
 /* Header Styles */
