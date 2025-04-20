@@ -44,7 +44,7 @@ export default function OnboardingPage() {
     setFormSuccess('')
 
     try {
-      const response = await fetch('http://localhost/login.php', {
+      const response = await fetch('http://localhost/gulit/login.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -95,7 +95,7 @@ export default function OnboardingPage() {
     }
 
     try {
-      const response = await fetch('http://localhost/signup.php', {
+      const response = await fetch('http://localhost/gulit/signup.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
