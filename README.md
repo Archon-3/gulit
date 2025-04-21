@@ -1,2 +1,2 @@
 # gulit
-e-commerce platform 
+Ethiopian e-commerce platform 
