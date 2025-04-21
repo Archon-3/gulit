@@ -1,15 +1,18 @@
-// App.jsx
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import OnboardingPage from './pages/OnboardingPage';
-import home from './pages/home';
-
+import Home from './pages/Home';
+import Cart from './pages/Cart';
 
 function App() {
   return (
-    <div className="App">
-      <OnboardingPage />
-      <Home/>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<OnboardingPage />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/cart" element={<Cart />} />
+      </Routes>
+    </Router>
   );
 }
 
