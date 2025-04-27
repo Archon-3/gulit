@@ -89,4 +89,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     }
+    try {
+        // Update item in database
+        $query = "UPDATE items SET name = ?, description = ?, price = ?, category = ?, updated_at = NOW()";
+        
+        if (!empty($image_update)) {
+            $query .= $image_update;
+            $stmt = $conn->prepare($query . " WHERE id = ? AND user_id = ?");
+            $stmt->bind_param("ssdssii", $name, $description, $price, $category, $image_params, $item_id, $user_id);
+        } else {
+            $stmt = $conn->prepare($query . " WHERE id = ? AND user_id = ?");
+            $stmt->bind_param("ssdii", $name, $description, $price, $category, $item_id, $user_id);
+        }
+        
+        if ($stmt->execute()) {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Item updated successfully'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to update item: ' . $stmt->error
+            ]);
+        }
+        
+        $stmt->close();
+    } catch (Exception $e) {
+        echo json_encode([
+                         'status' => 'error',
+            'message' => 'Database error: ' . $e->getMessage()
+        ]);
+    }
+    
+    $conn->close();
+} else {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Invalid request method'
+    ]);
+}
+?>
     
