@@ -89,3 +89,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     $stmt->close();
+    // Handle image upload or URL
+    $image_update = '';
+    $image_params = '';
+    
+    // If image URL is provided
+    if (isset($_POST['image_url']) && !empty($_POST['image_url'])) {
+        $image_update = ", image = ?";
+        $image_params = $_POST['image_url'];
+    } 
+    // If image file is uploaded
+    elseif (isset($_FILES['image_file']) && $_FILES['image_file']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = 'uploads/';
+        
+        // Create directory if it doesn't exist
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
