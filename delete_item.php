@@ -23,3 +23,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         exit;
     }
+     try {
+        // Verify item belongs to user
+        $stmt = $conn->prepare("SELECT image FROM items WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $item_id, $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 0) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Item not found or you do not have permission to delete it'
+            ]);
+            $stmt->close();
+            $conn->close();
+            exit;
+        }
+        
+        $item = $result->fetch_assoc();
+        $stmt->close();
