@@ -59,4 +59,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Default placeholder image
         $image_path = '/placeholder.svg';
     }
+    try {
+        // Insert item into database
+        $stmt = $conn->prepare("INSERT INTO items (name, description, price, image, category, user_id, created_at) 
+                               VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        
+        $stmt->bind_param("ssdssi", $name, $description, $price, $image_path, $category, $user_id);
+        
+        if ($stmt->execute()) {
+            $item_id = $conn->insert_id;
+            
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Item added successfully',
+                'item_id' => $item_id
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to add item: ' . $stmt->error
+            ]);
+        }
+        
+        $stmt->close();
+    } catch (Exception $e) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Database error: ' . $e->getMessage()
+        ]);
+    }
+    
+    $conn->close();
+} else {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Invalid request method'
+    ]);
+}
+?>
     
