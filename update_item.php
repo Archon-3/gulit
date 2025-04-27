@@ -25,3 +25,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         exit;
     }
+    // Verify item belongs to user
+    $stmt = $conn->prepare("SELECT user_id FROM items WHERE id = ?");
+    $stmt->bind_param("i", $item_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Item not found'
+        ]);
+        $stmt->close();
+        $conn->close();
+        exit;
+    }
+    
+    $item = $result->fetch_assoc();
+    
+    if ($item['user_id'] != $user_id) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'You do not have permission to update this item'
+        ]);
+        $stmt->close();
+        $conn->close();
+        exit;
+    }
+    
+    $stmt->close();
