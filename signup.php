@@ -92,6 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode($response);
 }
 
-// Close database connection
+// Closeing the database connection
 $conn->close();
 ?>
