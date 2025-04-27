@@ -16,3 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = isset($_POST['price']) ? floatval($_POST['price']) : 0;
     $category = isset($_POST['category']) ? $_POST['category'] : 'electronics';
     $user_id = isset($_POST['user_id']) ? intval($_POST['user_id']) : 0;
+    
+    // Validate required fields
+    if ($item_id <= 0 || empty($name) || empty($description) || $price <= 0 || $user_id <= 0) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'All fields are required'
+        ]);
+        exit;
+    }
