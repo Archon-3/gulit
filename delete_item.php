@@ -42,3 +42,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $item = $result->fetch_assoc();
         $stmt->close();
+
+
+          // Delete item from database
+        $stmt = $conn->prepare("DELETE FROM items WHERE id = ? AND user_id = ?");
+        $stmt->bind_param("ii", $item_id, $user_id);
+        
+        if ($stmt->execute()) {
+            // If item had a local image, delete it
+            $image_path = $item['image'];
+            if (strpos($image_path, 'uploads/') === 0 && file_exists($image_path)) {
+                unlink($image_path);
+            }
+            
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Item deleted successfully'
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to delete item: ' . $stmt->error
+            ]);
+        }
+        
+        $stmt->close();
+    } catch (Exception $e) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Database error: ' . $e->getMessage()
+        ]);
+    }
+    
+    $conn->close();
+} else {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Invalid request method'
+    ]);
+}
+?>
