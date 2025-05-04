@@ -23,8 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         exit;
     }
-    
-    try {
+     try {
         // Verify item belongs to user
         $stmt = $conn->prepare("SELECT image FROM items WHERE id = ? AND user_id = ?");
         $stmt->bind_param("ii", $item_id, $user_id);
@@ -43,8 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $item = $result->fetch_assoc();
         $stmt->close();
-        
-        // Delete item from database
+
+
+          // Delete item from database
         $stmt = $conn->prepare("DELETE FROM items WHERE id = ? AND user_id = ?");
         $stmt->bind_param("ii", $item_id, $user_id);
         

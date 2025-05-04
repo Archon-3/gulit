@@ -1,3 +1,5 @@
+ 
+
 "use client"
 
 import { useState, useEffect } from "react"
@@ -141,6 +143,8 @@ export default function Admin({ onLogout, currentUser }) {
     }
   }
 
+  
+
   // Fetch special deals
   const fetchSpecialDeals = async () => {
     setIsLoading(true)
@@ -282,6 +286,8 @@ export default function Admin({ onLogout, currentUser }) {
         originalPrice: Number.parseFloat(newDeal.originalPrice),
         salePrice: Number.parseFloat(newDeal.salePrice),
       }
+
+     
 
       setSpecialDeals([...specialDeals, dealToAdd])
       setNewDeal({
@@ -427,6 +433,7 @@ export default function Admin({ onLogout, currentUser }) {
   const getFilteredItems = (items) => {
     if (!searchQuery) return items
 
+
     return items.filter((item) => {
       // Check if any property contains the search query
       return Object.values(item).some(
@@ -534,6 +541,7 @@ export default function Admin({ onLogout, currentUser }) {
               </div>
             </div>
 
+
             <div className="dashboard-sections">
               <div className="dashboard-section">
                 <div className="section-header">
@@ -609,6 +617,7 @@ export default function Admin({ onLogout, currentUser }) {
                 <span>Refresh</span>
               </button>
             </div>
+
 
             <div className="table-container">
               <table className="admin-table">
@@ -696,6 +705,7 @@ export default function Admin({ onLogout, currentUser }) {
             </div>
           </div>
         )}
+       
 
         {/* Special Deals */}
         {activeTab === "special-deals" && (
@@ -788,6 +798,7 @@ export default function Admin({ onLogout, currentUser }) {
                             <button className="edit-button" onClick={() => handleEditDeal(deal)}>
                               <Edit size={16} />
                             </button>
+                           
                             <button
                               className="delete-button"
                               onClick={() => {
@@ -888,6 +899,7 @@ export default function Admin({ onLogout, currentUser }) {
                           <span className={`status-badge ${order.status.toLowerCase()}`}>{order.status}</span>
                         </td>
                         <td>{order.date}</td>
+
                         <td>
                           <div className="table-actions">
                             <button className="edit-button">
@@ -988,6 +1000,7 @@ export default function Admin({ onLogout, currentUser }) {
                               <Edit size={16} />
                             </button>
                             {user.email !== "admin@example.com" && (
+
                               <button className="delete-button">
                                 <Trash2 size={16} />
                               </button>
@@ -1089,6 +1102,7 @@ export default function Admin({ onLogout, currentUser }) {
                       min="0"
                       required
                     />
+
                   </div>
                 </div>
                 <div className="form-group">
@@ -1185,6 +1199,7 @@ export default function Admin({ onLogout, currentUser }) {
                   <label htmlFor="active">Active</label>
                 </div>
                 <div className="form-actions">
+
                   <button type="button" className="cancel-button" onClick={() => setShowEditDealModal(false)}>
                     Cancel
                   </button>
@@ -1239,3 +1254,8 @@ export default function Admin({ onLogout, currentUser }) {
     </div>
   )
 }
+
+
+
+
+

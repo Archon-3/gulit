@@ -212,7 +212,7 @@
     align-items: center;
     margin-bottom: 1rem;
   }
-  
+
   .section-header h3 {
     margin: 0;
     font-size: 1.25rem;
@@ -435,6 +435,8 @@
     padding: 0.75rem 1.5rem;
     border-radius: var(--border-radius);
     border: none;
+
+
     cursor: pointer;
     transition: background-color 0.2s;
   }
@@ -578,4 +580,4 @@
       grid-template-columns: 1fr;
     }
   }
-  
+

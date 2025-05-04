@@ -24,8 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         exit;
     }
-    
-    // Handle image upload or URL
+     // Handle image upload or URL
     $image_path = '';
     
     // If image URL is provided
@@ -60,7 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Default placeholder image
         $image_path = '/placeholder.svg';
     }
-    
     try {
         // Insert item into database
         $stmt = $conn->prepare("INSERT INTO items (name, description, price, image, category, user_id, created_at) 
@@ -99,3 +97,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
 }
 ?>
+    

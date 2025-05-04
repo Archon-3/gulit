@@ -25,7 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         exit;
     }
-    
     // Verify item belongs to user
     $stmt = $conn->prepare("SELECT user_id FROM items WHERE id = ?");
     $stmt->bind_param("i", $item_id);
@@ -55,8 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     $stmt->close();
-    
-    // Handle image upload or URL
+     // Handle image upload or URL
     $image_update = '';
     $image_params = '';
     
@@ -91,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
     }
-    
     try {
         // Update item in database
         $query = "UPDATE items SET name = ?, description = ?, price = ?, category = ?, updated_at = NOW()";
@@ -120,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->close();
     } catch (Exception $e) {
         echo json_encode([
-            'status' => 'error',
+                         'status' => 'error',
             'message' => 'Database error: ' . $e->getMessage()
         ]);
     }
@@ -133,3 +130,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     ]);
 }
 ?>
+    
