@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 // Enable CORS
 header("Access-Control-Allow-Origin: *");
@@ -66,6 +65,3 @@ if ($user_id <= 0) {
 
 $conn->close();
 ?>
-=======
-
->>>>>>> 29cd5a982cf33862a43c03ce63a1f57534288c21
