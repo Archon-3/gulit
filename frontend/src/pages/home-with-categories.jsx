@@ -1050,3 +1050,22 @@ return (
                         </AnimatePresence>
                       </div>
                     </section>
+                    <section className="featured-section">
+              <h2>Featured Products</h2>
+              <div className="featured-products">
+                {featuredProducts.map((product) => (
+                  <div className="product-card" key={product.id}>
+                    <img src={product.image || "/placeholder.svg"} alt={product.name} />
+                    <h3>{product.name}</h3>
+                    <p className="product-description">{product.description}</p>
+                    <p className="product-price">${product.price.toFixed(2)}</p>
+                    <div className="product-actions">
+                      <button className="buy-button">Buy Now</button>
+                      <button className="cart-add-button" onClick={() => addToCart(product)}>
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
