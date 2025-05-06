@@ -1904,4 +1904,109 @@ return (
                       </div>
                     </div>
                   )}
-            
+            {/* Delete Confirmation Modal */}
+      {showDeleteConfirmModal && (
+        <div
+          className="modal-overlay"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+            padding: "1rem",
+          }}
+        >
+          <div
+            className="login-modal"
+            style={{
+              maxWidth: "400px",
+              width: "100%",
+              backgroundColor: "var(--background-card)",
+              borderRadius: "var(--border-radius)",
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <div
+              className="modal-header"
+              style={{
+                padding: "1rem",
+                borderBottom: "1px solid var(--border-color)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <h2 style={{ margin: 0 }}>Confirm Delete</h2>
+              <button
+                className="close-button"
+                onClick={() => {
+                  setShowDeleteConfirmModal(false)
+                  setItemToDelete(null)
+                }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div style={{ padding: "1.5rem" }}>
+              <p>Are you sure you want to delete "{itemToDelete?.name}"?</p>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", marginTop: "0.5rem" }}>
+                This action cannot be undone.
+              </p>
+
+              <div style={{ display: "flex", gap: "1rem", marginTop: "1.5rem" }}>
+                <button
+                  onClick={() => {
+                    setShowDeleteConfirmModal(false)
+                    setItemToDelete(null)
+                  }}
+                  style={{
+                    flex: 1,
+                    padding: "0.75rem",
+                    backgroundColor: "var(--background-light)",
+                    color: "var(--text-color)",
+                    border: "none",
+                    borderRadius: "var(--border-radius)",
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteItem}
+                  style={{
+                    flex: 1,
+                    padding: "0.75rem",
+                    backgroundColor: "#ef4444",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "var(--border-radius)",
+                    cursor: "pointer",
+                    opacity: isLoading ? 0.7 : 1,
+                  }}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
