@@ -1335,4 +1335,139 @@ return (
                         {formSuccess}
                       </div>
                     )}
-      
+                    <form className="login-form" onSubmit={handleAddItem}>
+                <div className="form-group" style={{ marginBottom: "1rem" }}>
+                  <label htmlFor="name" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                    Product Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter product name"
+                    value={newItem.name}
+                    onChange={handleInputChange}
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "var(--border-radius)",
+                      border: "1px solid var(--border-color)",
+                      backgroundColor: "var(--background-light)",
+                    }}
+                  />
+                </div>
+
+                <div className="form-group" style={{ marginBottom: "1rem" }}>
+                  <label htmlFor="description" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                    Description
+                  </label>
+                  <textarea
+                    id="description"
+                    placeholder="Enter product description"
+                    value={newItem.description}
+                    onChange={handleInputChange}
+                    required
+                    style={{
+                      width: "100%",
+                      minHeight: "100px",
+                      padding: "0.75rem",
+                      borderRadius: "var(--border-radius)",
+                      border: "1px solid var(--border-color)",
+                      backgroundColor: "var(--background-light)",
+                      resize: "vertical",
+                    }}
+                  />
+                </div>
+
+                <div className="form-group" style={{ marginBottom: "1rem" }}>
+                  <label htmlFor="category" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                    Category
+                  </label>
+                  <select
+                    id="category"
+                    value={newItem.category}
+                    onChange={handleInputChange}
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "var(--border-radius)",
+                      border: "1px solid var(--border-color)",
+                      backgroundColor: "var(--background-light)",
+                    }}
+                  >
+                    {categories.map((category) => (
+                      <option key={category} value={category}>
+                        {category.charAt(0).toUpperCase() + category.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: "1rem" }}>
+                  <label htmlFor="price" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                    Price ($)
+                  </label>
+                  <input
+                    type="number"
+                    id="price"
+                    placeholder="Enter price"
+                    value={newItem.price}
+                    onChange={handleInputChange}
+                    min="0.01"
+                    step="0.01"
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "var(--border-radius)",
+                      border: "1px solid var(--border-color)",
+                      backgroundColor: "var(--background-light)",
+                    }}
+                  />
+                </div>
+
+                <div className="form-group" style={{ marginBottom: "1.5rem" }}>
+                  <label htmlFor="image" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                    Image URL
+                  </label>
+                  <input
+                    type="text"
+                    id="image"
+                    placeholder="Enter image URL"
+                    value={newItem.image}
+                    onChange={handleInputChange}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "var(--border-radius)",
+                      border: "1px solid var(--border-color)",
+                      backgroundColor: "var(--background-light)",
+                    }}
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button
+                    type="submit"
+                    className="login-submit"
+                    disabled={isLoading}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      backgroundColor: "var(--primary-color)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "var(--border-radius)",
+                      cursor: isLoading ? "not-allowed" : "pointer",
+                      opacity: isLoading ? 0.7 : 1,
+                    }}
+                  >
+                    {isLoading ? "Please wait..." : itemToEdit ? "Update Item" : "Add Item"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
