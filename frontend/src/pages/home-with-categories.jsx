@@ -708,4 +708,21 @@ return (
                                   overflow: "hidden",
                                 }}
                               >
-                            
+                            <div
+                      className="profile-dropdown-item"
+                      onClick={() => {
+                        setShowProfileSettingsModal(true)
+                        setShowProfileDropdown(false)
+                      }}
+                      style={{
+                        padding: "0.75rem 1rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        cursor: "pointer",
+                        transition: "background-color var(--transition-speed)",
+                      }}
+                    >
+                      <Settings size={18} />
+                      <span>Profile Settings</span>
+                    </div>
