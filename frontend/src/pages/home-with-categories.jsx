@@ -1000,3 +1000,53 @@ return (
             )}
           </section>
         )}
+        {/* Only show these sections when in Explore mode or no category is selected */}
+                {activeCategory === "explore" && (
+                  <>
+                    {/* Special Deals Section with Animation */}
+                    <section className="special-deals-section">
+                      <h2>Special Deal</h2>
+                      <div className="special-deals-header">
+                        <p>Limited time offers on our best products</p>
+                      </div>
+                      <div className="special-deals">
+                        <AnimatePresence mode="wait">
+                          <motion.div
+                            key={specialDealIndex}
+                            className="deal-card"
+                            variants={dealCardVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                          >
+                            <div className="deal-badge">SPECIAL OFFER</div>
+                            <div className="deal-discount-badge">
+                              {Math.round(
+                                ((specialDeals[specialDealIndex].originalPrice - specialDeals[specialDealIndex].salePrice) /
+                                  specialDeals[specialDealIndex].originalPrice) *
+                                  100,
+                              )}
+                              % OFF
+                            </div>
+                            <img
+                              src={specialDeals[specialDealIndex].image || "/placeholder.svg"}
+                              alt={specialDeals[specialDealIndex].name}
+                            />
+                            <div className="deal-content">
+                              <h3>{specialDeals[specialDealIndex].name}</h3>
+                              <p className="product-description">{specialDeals[specialDealIndex].description}</p>
+                              <div className="deal-price">
+                                <p className="original-price">${specialDeals[specialDealIndex].originalPrice.toFixed(2)}</p>
+                                <p className="sale-price">${specialDeals[specialDealIndex].salePrice.toFixed(2)}</p>
+                              </div>
+                              <div className="product-actions">
+                                <button className="buy-button">Buy Now</button>
+                                <button className="cart-add-button" onClick={() => addToCart(specialDeals[specialDealIndex])}>
+                                  Add to Cart
+                                </button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        </AnimatePresence>
+                      </div>
+                    </section>
