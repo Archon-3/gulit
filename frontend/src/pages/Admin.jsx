@@ -321,8 +321,85 @@ export default function Admin({ onLogout, currentUser }) {
           </div>
         )}
 
-     
-          
+        {/* Dashboard */}
+        {activeTab === "dashboard" && (
+          <div className="admin-dashboard">
+            <div className="stats-grid">
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <Users size={24} />
+                </div>
+                <div className="stat-content">
+                  <h3>Total Users</h3>
+                  <p className="stat-value">{stats.totalUsers}</p>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <Package size={24} />
+                </div>
+                <div className="stat-content">
+                  <h3>Total Products</h3>
+                  <p className="stat-value">{stats.totalProducts}</p>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <DollarSign size={24} />
+                </div>
+                <div className="stat-content">
+                  <h3>Total Value</h3>
+                  <p className="stat-value">${stats.totalValue?.toFixed(2) || "0.00"}</p>
+                </div>
+              </div>
+              <div className="stat-card">
+                <div className="stat-icon">
+                  <ShoppingCart size={24} />
+                </div>
+                <div className="stat-content">
+                  <h3>Avg. Price</h3>
+                  <p className="stat-value">${stats.avgPrice?.toFixed(2) || "0.00"}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="dashboard-sections">
+              <div className="dashboard-section">
+                <div className="section-header">
+                  <h3>Recent Products</h3>
+                  <Link to="#" className="view-all" onClick={() => setActiveTab("products")}>
+                    View All
+                  </Link>
+                </div>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <td>ID</td>
+                      <td>Name</td>
+                      <td>Price</td>
+                      <td>Category</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.slice(0, 5).map((product) => (
+                      <tr key={product.id}>
+                        <td>#{product.id}</td>
+                        <td>{product.name}</td>
+                        <td>${Number.parseFloat(product.price).toFixed(2)}</td>
+                        <td>{product.category || "Uncategorized"}</td>
+                      </tr>
+                    ))}
+                    {products.length === 0 && (
+                      <tr>
+                        <td colSpan="4" className="empty-cell">
+                          No products found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
           
         {/* Users */}
         {activeTab === "users" && (
