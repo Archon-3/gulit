@@ -64,6 +64,9 @@ export default function Home({ onLogout, currentUser }) {
   // Add state for displayed marketplace items and rotation
   const [displayedMarketplaceItems, setDisplayedMarketplaceItems] = useState([])
   const [lastRotationTime, setLastRotationTime] = useState(Date.now())
+  // Add state for active category and navigation
+  const [activeCategory, setActiveCategory] = useState("explore")
+  const [categoryItems, setCategoryItems] = useState([])
 
   const location = useLocation()
 
@@ -72,7 +75,7 @@ export default function Home({ onLogout, currentUser }) {
   const { addToCart, getCartCount, updateUserId } = useCart()
 
   const languages = ["English", "Spanish", "French", "German", "Japanese"]
-  const categories = ["electronics", "clothing", "home", "beauty", "sports", "books", "toys", "other"]
+  const categories = ["electronics", "clothing", "beauty", "sports", "books", "toys", "other"]
 
   // Load user data on component mount
   useEffect(() => {
@@ -130,6 +133,20 @@ export default function Home({ onLogout, currentUser }) {
 
     return () => clearInterval(interval)
   }, [])
+
+  // Filter items by category when active category changes
+  useEffect(() => {
+    if (activeCategory === "explore") {
+      // Show all items when on explore
+      setCategoryItems([])
+    } else {
+      // Filter items by the selected category
+      const filtered = marketplaceItems.filter(
+        (item) => item.category && item.category.toLowerCase() === activeCategory.toLowerCase(),
+      )
+      setCategoryItems(filtered)
+    }
+  }, [activeCategory, marketplaceItems])
 
   // Fetch user items from backend
   const fetchUserItems = async (userId) => {
@@ -628,6 +645,20 @@ export default function Home({ onLogout, currentUser }) {
             <input type="text" placeholder="Search for products..." value={searchQuery} onChange={handleSearchChange} />
           </form>
         </div>
+        <div className="category-nav">
+          <ul className="category-nav-list">
+            <li className={activeCategory === "explore" ? "active" : ""}>
+              <button onClick={() => setActiveCategory("explore")}>Explore</button>
+            </li>
+            {categories.map((category) => (
+              <li key={category} className={activeCategory === category ? "active" : ""}>
+                <button onClick={() => setActiveCategory(category)}>
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
         <div className="header-actions">
           <button className="theme-toggle" onClick={toggleTheme}>
             {darkTheme ? <Sun size={20} /> : <Moon size={20} />}
@@ -810,27 +841,19 @@ export default function Home({ onLogout, currentUser }) {
       </header>
 
       <main>
-        <section className="hero-section">
-          <div className="hero-content">
-            <h1>Welcome to Gulit</h1>
-            <p>Discover the latest tech products at unbeatable prices</p>
-            <button className="cta-button">Shop Now</button>
-          </div>
-        </section>
-
-        {searchQuery.trim() !== "" && (
+        {activeCategory !== "explore" && (
           <section className="featured-section">
-            <h2>Search Results</h2>
+            <h2>{activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)}</h2>
             <div className="section-header">
               <p>
-                {filteredItems.length > 0
-                  ? `Found ${filteredItems.length} item${filteredItems.length === 1 ? "" : "s"} for "${searchQuery}"`
-                  : `No items found for "${searchQuery}"`}
+                {categoryItems.length > 0
+                  ? `Found ${categoryItems.length} item${categoryItems.length === 1 ? "" : "s"} in ${activeCategory}`
+                  : `No items found in ${activeCategory}`}
               </p>
             </div>
-            {filteredItems.length > 0 ? (
+            {categoryItems.length > 0 ? (
               <div className="featured-products">
-                {filteredItems.map((product) => (
+                {categoryItems.map((product) => (
                   <div className="product-card" key={product.id}>
                     <img src={product.image || "/placeholder.svg"} alt={product.name} />
                     <h3>{product.name}</h3>
@@ -885,210 +908,295 @@ export default function Home({ onLogout, currentUser }) {
                   marginBottom: "2rem",
                 }}
               >
-                <p>No items match your search. Try different keywords or browse our categories.</p>
+                <p>No items found in this category. Check back later or browse other categories.</p>
               </div>
             )}
           </section>
         )}
 
-        {/* Special Deals Section with Animation */}
-        <section className="special-deals-section">
-          <h2>Special Deal</h2>
-          <div className="special-deals-header">
-            <p>Limited time offers on our best products</p>
-          </div>
-          <div className="special-deals">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={specialDealIndex}
-                className="deal-card"
-                variants={dealCardVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-              >
-                <div className="deal-badge">SPECIAL OFFER</div>
-                <div className="deal-discount-badge">
-                  {Math.round(
-                    ((specialDeals[specialDealIndex].originalPrice - specialDeals[specialDealIndex].salePrice) /
-                      specialDeals[specialDealIndex].originalPrice) *
-                      100,
-                  )}
-                  % OFF
-                </div>
-                <img
-                  src={specialDeals[specialDealIndex].image || "/placeholder.svg"}
-                  alt={specialDeals[specialDealIndex].name}
-                />
-                <div className="deal-content">
-                  <h3>{specialDeals[specialDealIndex].name}</h3>
-                  <p className="product-description">{specialDeals[specialDealIndex].description}</p>
-                  <div className="deal-price">
-                    <p className="original-price">${specialDeals[specialDealIndex].originalPrice.toFixed(2)}</p>
-                    <p className="sale-price">${specialDeals[specialDealIndex].salePrice.toFixed(2)}</p>
-                  </div>
-                  <div className="product-actions">
-                    <button className="buy-button">Buy Now</button>
-                    <button className="cart-add-button" onClick={() => addToCart(specialDeals[specialDealIndex])}>
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </section>
-
-        <section className="featured-section">
-          <h2>Featured Products</h2>
-          <div className="featured-products">
-            {featuredProducts.map((product) => (
-              <div className="product-card" key={product.id}>
-                <img src={product.image || "/placeholder.svg"} alt={product.name} />
-                <h3>{product.name}</h3>
-                <p className="product-description">{product.description}</p>
-                <p className="product-price">${product.price.toFixed(2)}</p>
-                <div className="product-actions">
-                  <button className="buy-button">Buy Now</button>
-                  <button className="cart-add-button" onClick={() => addToCart(product)}>
-                    Add to Cart
-                  </button>
-                </div>
+        {activeCategory === "explore" && (
+          <>
+            <section className="hero-section">
+              <div className="hero-content">
+                <h1>Welcome to Gulit</h1>
+                <p>Discover the latest tech products at unbeatable prices</p>
+                <button className="cta-button">Shop Now</button>
               </div>
-            ))}
-          </div>
-        </section>
+            </section>
 
-        {/* Marketplace Items Section - showing limited items from all sellers */}
-        {marketplaceItems.length > 0 && (
-          <section className="featured-section">
-            <h2>Marketplace Items</h2>
-            <div className="section-header">
-              <p>
-                Browse items from our community of sellers
-                {marketplaceItems.length > 15 && (
-                  <span style={{ marginLeft: "0.5rem", fontSize: "0.9rem", color: "var(--text-secondary)" }}>
-                    (Showing 15 of {marketplaceItems.length} items - search to see more)
-                  </span>
-                )}
-              </p>
-              {marketplaceItems.length > 15 && (
-                <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", marginTop: "0.25rem" }}>
-                  Items rotate every 5 minutes. Last updated: {new Date(lastRotationTime).toLocaleTimeString()}
-                </p>
-              )}
-            </div>
-            <div className="featured-products">
-              {displayedMarketplaceItems.map((product) => (
-                <div className="product-card" key={product.id}>
-                  <img src={product.image || "/placeholder.svg"} alt={product.name} />
-                  <h3>{product.name}</h3>
-                  <p className="product-description">{product.description}</p>
-                  <p className="product-price">${Number.parseFloat(product.price).toFixed(2)}</p>
-                  <div className="product-actions">
-                    <button className="buy-button">Buy Now</button>
-                    <button className="cart-add-button" onClick={() => addToCart(product)}>
-                      Add to Cart
-                    </button>
+            {searchQuery.trim() !== "" && (
+              <section className="featured-section">
+                <h2>Search Results</h2>
+                <div className="section-header">
+                  <p>
+                    {filteredItems.length > 0
+                      ? `Found ${filteredItems.length} item${filteredItems.length === 1 ? "" : "s"} for "${searchQuery}"`
+                      : `No items found for "${searchQuery}"`}
+                  </p>
+                </div>
+                {filteredItems.length > 0 ? (
+                  <div className="featured-products">
+                    {filteredItems.map((product) => (
+                      <div className="product-card" key={product.id}>
+                        <img src={product.image || "/placeholder.svg"} alt={product.name} />
+                        <h3>{product.name}</h3>
+                        <p className="product-description">{product.description}</p>
+                        <p className="product-price">${Number.parseFloat(product.price).toFixed(2)}</p>
+                        <div className="product-actions">
+                          <button className="buy-button">Buy Now</button>
+                          <button className="cart-add-button" onClick={() => addToCart(product)}>
+                            Add to Cart
+                          </button>
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "0.8rem",
+                            color: "var(--text-secondary)",
+                            marginTop: "0.5rem",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          <span>
+                            Category:{" "}
+                            {product.category
+                              ? product.category.charAt(0).toUpperCase() + product.category.slice(1)
+                              : "Electronics"}
+                          </span>
+                          {product.user_id === loggedInUser?.id && (
+                            <span
+                              style={{
+                                backgroundColor: "var(--primary-color)",
+                                color: "white",
+                                padding: "0.2rem 0.5rem",
+                                borderRadius: "4px",
+                                fontSize: "0.7rem",
+                              }}
+                            >
+                              Your Item
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
+                ) : (
                   <div
                     style={{
-                      fontSize: "0.8rem",
-                      color: "var(--text-secondary)",
-                      marginTop: "0.5rem",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
+                      textAlign: "center",
+                      padding: "2rem",
+                      backgroundColor: "var(--background-card)",
+                      borderRadius: "var(--border-radius)",
+                      marginBottom: "2rem",
                     }}
                   >
-                    <span>
-                      Category:{" "}
-                      {product.category
-                        ? product.category.charAt(0).toUpperCase() + product.category.slice(1)
-                        : "Electronics"}
-                    </span>
-                    {product.user_id === loggedInUser?.id && (
-                      <span
-                        style={{
-                          backgroundColor: "var(--primary-color)",
-                          color: "white",
-                          padding: "0.2rem 0.5rem",
-                          borderRadius: "4px",
-                          fontSize: "0.7rem",
-                        }}
-                      >
-                        Your Item
-                      </span>
-                    )}
+                    <p>No items match your search. Try different keywords or browse our categories.</p>
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+                )}
+              </section>
+            )}
 
-        {/* Only show "Your Items" section if the user has items */}
-        {userItems.length > 0 && (
-          <section className="featured-section">
-            <h2>Your Items</h2>
-            <div className="featured-products">
-              {userItems.map((product) => (
-                <div className="product-card" key={product.id}>
-                  <img src={product.image || "/placeholder.svg"} alt={product.name} />
-                  <h3>{product.name}</h3>
-                  <p className="product-description">{product.description}</p>
-                  <p className="product-price">${Number.parseFloat(product.price).toFixed(2)}</p>
-                  <div className="product-actions">
-                    <button
-                      className="buy-button"
-                      onClick={() => handleEditItem(product)}
-                      style={{ backgroundColor: "var(--primary-color)" }}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="cart-add-button"
-                      onClick={() => {
-                        setItemToDelete(product)
-                        setShowDeleteConfirmModal(true)
-                      }}
-                      style={{ backgroundColor: "#ef4444" }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+            {/* Special Deals Section with Animation */}
+            <section className="special-deals-section">
+              <h2>Special Deal</h2>
+              <div className="special-deals-header">
+                <p>Limited time offers on our best products</p>
+              </div>
+              <div className="special-deals">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={specialDealIndex}
+                    className="deal-card"
+                    variants={dealCardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <div className="deal-badge">SPECIAL OFFER</div>
+                    <div className="deal-discount-badge">
+                      {Math.round(
+                        ((specialDeals[specialDealIndex].originalPrice - specialDeals[specialDealIndex].salePrice) /
+                          specialDeals[specialDealIndex].originalPrice) *
+                          100,
+                      )}
+                      % OFF
+                    </div>
+                    <img
+                      src={specialDeals[specialDealIndex].image || "/placeholder.svg"}
+                      alt={specialDeals[specialDealIndex].name}
+                    />
+                    <div className="deal-content">
+                      <h3>{specialDeals[specialDealIndex].name}</h3>
+                      <p className="product-description">{specialDeals[specialDealIndex].description}</p>
+                      <div className="deal-price">
+                        <p className="original-price">${specialDeals[specialDealIndex].originalPrice.toFixed(2)}</p>
+                        <p className="sale-price">${specialDeals[specialDealIndex].salePrice.toFixed(2)}</p>
+                      </div>
+                      <div className="product-actions">
+                        <button className="buy-button">Buy Now</button>
+                        <button className="cart-add-button" onClick={() => addToCart(specialDeals[specialDealIndex])}>
+                          Add to Cart
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </section>
 
-        <section className="popular-section">
-          <h2>Popular Items</h2>
-          <div className="section-header">
-            <p>Trending products loved by our customers</p>
-          </div>
-          <div className="popular-products-container">
-            <div className="popular-products">
-              {popularProducts.map((product) => (
-                <div className="popular-product-card" key={product.id}>
-                  <div className="popular-badge">Popular</div>
-                  <img src={product.image || "/placeholder.svg"} alt={product.name} />
-                  <div className="popular-product-content">
+            <section className="featured-section">
+              <h2>Featured Products</h2>
+              <div className="featured-products">
+                {featuredProducts.map((product) => (
+                  <div className="product-card" key={product.id}>
+                    <img src={product.image || "/placeholder.svg"} alt={product.name} />
                     <h3>{product.name}</h3>
                     <p className="product-description">{product.description}</p>
-                    <div className="popular-product-footer">
-                      <p className="product-price">${product.price.toFixed(2)}</p>
+                    <p className="product-price">${product.price.toFixed(2)}</p>
+                    <div className="product-actions">
+                      <button className="buy-button">Buy Now</button>
                       <button className="cart-add-button" onClick={() => addToCart(product)}>
                         Add to Cart
                       </button>
                     </div>
                   </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Marketplace Items Section - showing limited items from all sellers */}
+            {marketplaceItems.length > 0 && (
+              <section className="featured-section">
+                <h2>Marketplace Items</h2>
+                <div className="section-header">
+                  <p>
+                    Browse items from our community of sellers
+                    {marketplaceItems.length > 15 && (
+                      <span style={{ marginLeft: "0.5rem", fontSize: "0.9rem", color: "var(--text-secondary)" }}>
+                        (Showing 15 of {marketplaceItems.length} items - search to see more)
+                      </span>
+                    )}
+                  </p>
+                  {marketplaceItems.length > 15 && (
+                    <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", marginTop: "0.25rem" }}>
+                      Items rotate every 5 minutes. Last updated: {new Date(lastRotationTime).toLocaleTimeString()}
+                    </p>
+                  )}
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
+                <div className="featured-products">
+                  {displayedMarketplaceItems.map((product) => (
+                    <div className="product-card" key={product.id}>
+                      <img src={product.image || "/placeholder.svg"} alt={product.name} />
+                      <h3>{product.name}</h3>
+                      <p className="product-description">{product.description}</p>
+                      <p className="product-price">${Number.parseFloat(product.price).toFixed(2)}</p>
+                      <div className="product-actions">
+                        <button className="buy-button">Buy Now</button>
+                        <button className="cart-add-button" onClick={() => addToCart(product)}>
+                          Add to Cart
+                        </button>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "var(--text-secondary)",
+                          marginTop: "0.5rem",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span>
+                          Category:{" "}
+                          {product.category
+                            ? product.category.charAt(0).toUpperCase() + product.category.slice(1)
+                            : "Electronics"}
+                        </span>
+                        {product.user_id === loggedInUser?.id && (
+                          <span
+                            style={{
+                              backgroundColor: "var(--primary-color)",
+                              color: "white",
+                              padding: "0.2rem 0.5rem",
+                              borderRadius: "4px",
+                              fontSize: "0.7rem",
+                            }}
+                          >
+                            Your Item
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Only show "Your Items" section if the user has items */}
+            {userItems.length > 0 && (
+              <section className="featured-section">
+                <h2>Your Items</h2>
+                <div className="featured-products">
+                  {userItems.map((product) => (
+                    <div className="product-card" key={product.id}>
+                      <img src={product.image || "/placeholder.svg"} alt={product.name} />
+                      <h3>{product.name}</h3>
+                      <p className="product-description">{product.description}</p>
+                      <p className="product-price">${Number.parseFloat(product.price).toFixed(2)}</p>
+                      <div className="product-actions">
+                        <button
+                          className="buy-button"
+                          onClick={() => handleEditItem(product)}
+                          style={{ backgroundColor: "var(--primary-color)" }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="cart-add-button"
+                          onClick={() => {
+                            setItemToDelete(product)
+                            setShowDeleteConfirmModal(true)
+                          }}
+                          style={{ backgroundColor: "#ef4444" }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <section className="popular-section">
+              <h2>Popular Items</h2>
+              <div className="section-header">
+                <p>Trending products loved by our customers</p>
+              </div>
+              <div className="popular-products-container">
+                <div className="popular-products">
+                  {popularProducts.map((product) => (
+                    <div className="popular-product-card" key={product.id}>
+                      <div className="popular-badge">Popular</div>
+                      <img src={product.image || "/placeholder.svg"} alt={product.name} />
+                      <div className="popular-product-content">
+                        <h3>{product.name}</h3>
+                        <p className="product-description">{product.description}</p>
+                        <div className="popular-product-footer">
+                          <p className="product-price">${product.price.toFixed(2)}</p>
+                          <button className="cart-add-button" onClick={() => addToCart(product)}>
+                            Add to Cart
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
       </main>
 
       <footer className="footer">
