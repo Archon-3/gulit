@@ -1716,3 +1716,192 @@ return (
                 </div>
               </div>
             )}
+            {/* My Items Modal */}
+                  {showMyItemsModal && (
+                    <div
+                      className="modal-overlay"
+                      style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 1000,
+                        padding: "1rem",
+                      }}
+                    >
+                      <div
+                        className="login-modal"
+                        style={{
+                          maxWidth: "800px",
+                          width: "100%",
+                          maxHeight: "90vh",
+                          overflowY: "auto",
+                          backgroundColor: "var(--background-card)",
+                          borderRadius: "var(--border-radius)",
+                          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+                          position: "relative",
+                        }}
+                      >
+                        <div
+                          className="modal-header"
+                          style={{
+                            padding: "1rem",
+                            borderBottom: "1px solid var(--border-color)",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            position: "sticky",
+                            top: 0,
+                            backgroundColor: "var(--background-card)",
+                            zIndex: 1,
+                          }}
+                        >
+                          <h2 style={{ margin: 0 }}>My Items</h2>
+                          <button
+                            className="close-button"
+                            onClick={() => setShowMyItemsModal(false)}
+                            style={{
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <X size={24} />
+                          </button>
+                        </div>
+            
+                        {userItems.length === 0 ? (
+                          <div style={{ textAlign: "center", padding: "2rem" }}>
+                            <Package size={48} style={{ color: "var(--text-secondary)", margin: "0 auto 1rem" }} />
+                            <h3>You haven't added any items yet</h3>
+                            <p style={{ color: "var(--text-secondary)", marginBottom: "1.5rem" }}>
+                              Start selling by adding your first item
+                            </p>
+                            <button
+                              className="cta-button"
+                              onClick={() => {
+                                setShowMyItemsModal(false)
+                                setShowAddItemModal(true)
+                              }}
+                              style={{
+                                padding: "0.75rem 1.5rem",
+                                backgroundColor: "var(--primary-color)",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "var(--border-radius)",
+                                cursor: "pointer",
+                              }}
+                            >
+                              Add Item
+                            </button>
+                          </div>
+                        ) : (
+                          <div style={{ padding: "1rem" }}>
+                            <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "flex-end" }}>
+                              <button
+                                className="cta-button"
+                                onClick={() => {
+                                  setShowMyItemsModal(false)
+                                  setShowAddItemModal(true)
+                                }}
+                                style={{
+                                  padding: "0.75rem 1.5rem",
+                                  backgroundColor: "var(--primary-color)",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "var(--border-radius)",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Add New Item
+                              </button>
+                            </div>
+            
+                            <div style={{ overflowX: "auto" }}>
+                              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
+                                <thead>
+                                  <tr style={{ borderBottom: "1px solid var(--border-color)" }}>
+                                    <th style={{ padding: "0.75rem", textAlign: "left" }}>Image</th>
+                                    <th style={{ padding: "0.75rem", textAlign: "left" }}>Name</th>
+                                    <th style={{ padding: "0.75rem", textAlign: "left" }}>Category</th>
+                                    <th style={{ padding: "0.75rem", textAlign: "left" }}>Price</th>
+                                    <th style={{ padding: "0.75rem", textAlign: "left" }}>Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {userItems.map((item) => (
+                                    <tr key={item.id} style={{ borderBottom: "1px solid var(--border-color)" }}>
+                                      <td style={{ padding: "0.75rem" }}>
+                                        <img
+                                          src={item.image || "/placeholder.svg"}
+                                          alt={item.name}
+                                          style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
+                                        />
+                                      </td>
+                                      <td style={{ padding: "0.75rem" }}>{item.name}</td>
+                                      <td style={{ padding: "0.75rem" }}>
+                                        {item.category
+                                          ? item.category.charAt(0).toUpperCase() + item.category.slice(1)
+                                          : "Electronics"}
+                                      </td>
+                                      <td style={{ padding: "0.75rem" }}>${Number.parseFloat(item.price).toFixed(2)}</td>
+                                      <td style={{ padding: "0.75rem" }}>
+                                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                                          <button
+                                            onClick={() => handleEditItem(item)}
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                              justifyContent: "center",
+                                              padding: "0.5rem",
+                                              backgroundColor: "var(--primary-color)",
+                                              color: "white",
+                                              border: "none",
+                                              borderRadius: "4px",
+                                              cursor: "pointer",
+                                            }}
+                                            aria-label="Edit item"
+                                          >
+                                            <Edit size={16} />
+                                          </button>
+                                          <button
+                                            onClick={() => {
+                                              setItemToDelete(item)
+                                              setShowDeleteConfirmModal(true)
+                                            }}
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                              justifyContent: "center",
+                                              padding: "0.5rem",
+                                              backgroundColor: "#ef4444",
+                                              color: "white",
+                                              border: "none",
+                                              borderRadius: "4px",
+                                              cursor: "pointer",
+                                            }}
+                                            aria-label="Delete item"
+                                          >
+                                            <Trash2 size={16} />
+                                          </button>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+            
