@@ -23,72 +23,7 @@ export function CartProvider({ children }) {
     }
   }, [])
 
-  // Load cart from localStorage when component mounts or when logged-in user changes
-  useEffect(() => {
-    if (loggedInUserId) {
-      const savedCart = localStorage.getItem(`cart_${loggedInUserId}`)
-      if (savedCart) {
-        setCartItems(JSON.parse(savedCart))
-      } else {
-        setCartItems([]) // Clear cart if no saved cart for this user
-      }
-    } else {
-      setCartItems([]) // Clear cart if no user is logged in
-    }
-  }, [loggedInUserId])
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    if (loggedInUserId) {
-      localStorage.setItem(`cart_${loggedInUserId}`, JSON.stringify(cartItems))
-    }
-  }, [cartItems, loggedInUserId])
-
-  // Add item to cart
-  const addToCart = (product) => {
-    if (!loggedInUserId) {
-      alert("Please log in to add items to your cart")
-      return
-    }
-
-    // Ensure we have a valid product with an ID
-    if (!product || !product.id) {
-      console.error("Invalid product:", product)
-      return
-    }
-
-    // Convert ID to string for consistent comparison
-    const productId = String(product.id)
-
-    setCartItems((prevItems) => {
-      // Make a copy of the previous items
-      const updatedItems = [...prevItems]
-
-      // Find the index of the existing item (if any)
-      const existingItemIndex = updatedItems.findIndex((item) => String(item.id) === productId)
-
-      if (existingItemIndex >= 0) {
-        // Item exists, update its quantity
-        const updatedItem = {
-          ...updatedItems[existingItemIndex],
-          quantity: updatedItems[existingItemIndex].quantity + 1,
-        }
-        updatedItems[existingItemIndex] = updatedItem
-      } else {
-        // Item doesn't exist, add it with quantity 1
-        updatedItems.push({
-          ...product,
-          id: productId, // Ensure consistent ID format
-          quantity: 1,
-        })
-      }
-
-      // Log for debugging
-      console.log("Updated cart:", updatedItems)
-
-      return updatedItems
-    })
-  }
 
   // Remove item from cart
   const removeFromCart = (productId) => {
