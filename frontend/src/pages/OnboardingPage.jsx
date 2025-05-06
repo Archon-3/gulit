@@ -1,26 +1,29 @@
 "use client"
 
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import "./onboardingpage.css"
 import { Search, ShoppingCart, User, Globe, ChevronDown, X, Sun, Moon } from "lucide-react"
 
-export default function OnboardingPage() {
+export default function OnboardingPage({ onLogin }) {
   const [darkTheme, setDarkTheme] = useState(false)
   const [isLoginForm, setIsLoginForm] = useState(true)
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: ''
+    email: "",
+    password: "",
+    name: "",
   })
-  const [formError, setFormError] = useState('')
-  const [formSuccess, setFormSuccess] = useState('')
+  const [formError, setFormError] = useState("")
+  const [formSuccess, setFormSuccess] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [loggedInUser, setLoggedInUser] = useState(null)
+
+  const navigate = useNavigate()
 
   const toggleTheme = () => {
     setDarkTheme(!darkTheme)
   }
-  
+
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [language, setLanguage] = useState("English")
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false)
@@ -32,7 +35,7 @@ export default function OnboardingPage() {
     const { id, value } = e.target
     setFormData({
       ...formData,
-      [id]: value
+      [id]: value,
     })
   }
 
@@ -40,35 +43,65 @@ export default function OnboardingPage() {
   const handleLogin = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-    setFormError('')
-    setFormSuccess('')
+    setFormError("")
+    setFormSuccess("")
 
     try {
-      const response = await fetch('http://localhost/gulit/login.php', {
-        method: 'POST',
+      // Check for admin credentials
+      if (formData.email === "abeni@gmail.com" && formData.password === "@@@@@@@") {
+        setFormSuccess("Admin login successful!")
+
+        // Create admin user object
+        const adminUser = {
+          id: 999, // Special admin ID
+          name: "Admin User",
+          email: "abeni@gmail.com",
+          isAdmin: true, // Add admin flag
+        }
+
+        // Call the onLogin prop to update auth state in parent component
+        onLogin(adminUser)
+
+        // Navigate to admin dashboard after successful login
+        setTimeout(() => {
+          navigate("/admin")
+        }, 1500)
+
+        setIsLoading(false)
+        return
+      }
+
+      // Regular user authentication (existing code)
+      const response = await fetch("http://localhost/gulit/login.php", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           email: formData.email,
-          password: formData.password
-        })
+          password: formData.password,
+        }),
       })
 
       const data = await response.json()
 
-      if (data.status === 'success') {
+      if (data.status === "success") {
         setFormSuccess(data.message)
         setLoggedInUser(data.user)
+
+        // Call the onLogin prop to update auth state in parent component
+        onLogin(data.user)
+
+        // Navigate to home page after successful login
         setTimeout(() => {
-          setShowLoginModal(false)
+          navigate("/home")
         }, 1500)
       } else {
         setFormError(data.message)
       }
     } catch (error) {
-      setFormError('An error occurred. Please try again.')
-      console.error('Login error:', error)
+      setFormError("An error occurred. Please try again.")
+      console.error("Login error:", error)
     } finally {
       setIsLoading(false)
     }
@@ -78,54 +111,54 @@ export default function OnboardingPage() {
   const handleSignup = async (e) => {
     e.preventDefault()
     setIsLoading(true)
-    setFormError('')
-    setFormSuccess('')
+    setFormError("")
+    setFormSuccess("")
 
     // Basic validation
     if (!formData.name || !formData.email || !formData.password) {
-      setFormError('All fields are required')
+      setFormError("All fields are required")
       setIsLoading(false)
       return
     }
 
     if (formData.password.length < 6) {
-      setFormError('Password must be at least 6 characters')
+      setFormError("Password must be at least 6 characters")
       setIsLoading(false)
       return
     }
 
     try {
-      const response = await fetch('http://localhost/gulit/signup.php', {
-        method: 'POST',
+      const response = await fetch("http://localhost/gulit/signup.php", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          password: formData.password
-        })
+          password: formData.password,
+        }),
       })
 
       const data = await response.json()
 
-      if (data.status === 'success') {
+      if (data.status === "success") {
         setFormSuccess(data.message)
         // Auto switch to login form after successful registration
         setTimeout(() => {
           setIsLoginForm(true)
           setFormData({
             ...formData,
-            password: ''
+            password: "",
           })
-          setFormSuccess('')
+          setFormSuccess("")
         }, 1500)
       } else {
         setFormError(data.message)
       }
     } catch (error) {
-      setFormError('An error occurred. Please try again.')
-      console.error('Signup error:', error)
+      setFormError("An error occurred. Please try again.")
+      console.error("Signup error:", error)
     } finally {
       setIsLoading(false)
     }
@@ -139,12 +172,12 @@ export default function OnboardingPage() {
   // Toggle between login and signup forms
   const toggleForm = () => {
     setIsLoginForm(!isLoginForm)
-    setFormError('')
-    setFormSuccess('')
+    setFormError("")
+    setFormSuccess("")
     setFormData({
-      email: '',
-      password: '',
-      name: ''
+      email: "",
+      password: "",
+      name: "",
     })
   }
 
@@ -194,7 +227,8 @@ export default function OnboardingPage() {
       description: "True wireless earbuds with active noise cancellation",
       originalPrice: 179.99,
       salePrice: 129.99,
-      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeuj8focJiIvgsHrWuHv4UeJ_QbWQoP0sDzg&s?q=50&w=200&h=200&auto=format&fit=crop",
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeuj8focJiIvgsHrWuHv4UeJ_QbWQoP0sDzg&s?q=50&w=200&h=200&auto=format&fit=crop",
     },
   ]
 
@@ -250,8 +284,17 @@ export default function OnboardingPage() {
           <h1>GULIT</h1>
         </div>
         <div className="search-bar">
-          <Search className="search-icon" size={20} />
-          <input type="text" placeholder="Search for products..." />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              // Can't search directly from onboarding page since user needs to log in first
+              setShowLoginModal(true)
+            }}
+            style={{ display: "flex", width: "100%" }}
+          >
+            <Search className="search-icon" size={20} />
+            <input type="text" placeholder="Search for products..." />
+          </form>
         </div>
         <div className="header-actions">
           <button className="theme-toggle" onClick={toggleTheme}>
@@ -306,7 +349,9 @@ export default function OnboardingPage() {
           <div className="hero-content">
             <h1>Welcome to Gulit</h1>
             <p>Discover the latest tech products at unbeatable prices</p>
-            <button className="cta-button">Shop Now</button>
+            <button className="cta-button" onClick={() => setShowLoginModal(true)}>
+              Shop Now
+            </button>
           </div>
         </section>
 
@@ -320,8 +365,12 @@ export default function OnboardingPage() {
                 <p className="product-description">{product.description}</p>
                 <p className="product-price">${product.price.toFixed(2)}</p>
                 <div className="product-actions">
-                  <button className="buy-button">Buy Now</button>
-                  <button className="cart-add-button">Add to Cart</button>
+                  <button className="buy-button" onClick={() => setShowLoginModal(true)}>
+                    Buy Now
+                  </button>
+                  <button className="cart-add-button" onClick={() => setShowLoginModal(true)}>
+                    Add to Cart
+                  </button>
                 </div>
               </div>
             ))}
@@ -349,8 +398,12 @@ export default function OnboardingPage() {
                     <p className="sale-price">${deal.salePrice.toFixed(2)}</p>
                   </div>
                   <div className="product-actions">
-                    <button className="buy-button">Buy Now</button>
-                    <button className="cart-add-button">Add to Cart</button>
+                    <button className="buy-button" onClick={() => setShowLoginModal(true)}>
+                      Buy Now
+                    </button>
+                    <button className="cart-add-button" onClick={() => setShowLoginModal(true)}>
+                      Add to Cart
+                    </button>
                   </div>
                 </div>
               </div>
@@ -374,7 +427,9 @@ export default function OnboardingPage() {
                     <p className="product-description">{product.description}</p>
                     <div className="popular-product-footer">
                       <p className="product-price">${product.price.toFixed(2)}</p>
-                      <button className="cart-add-button">Add to Cart</button>
+                      <button className="cart-add-button" onClick={() => setShowLoginModal(true)}>
+                        Add to Cart
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -419,69 +474,71 @@ export default function OnboardingPage() {
         <div className="modal-overlay">
           <div className="login-modal">
             <div className="modal-header">
-              <h2>{isLoginForm ? 'Login to Your Account' : 'Create an Account'}</h2>
+              <h2>{isLoginForm ? "Login to Your Account" : "Create an Account"}</h2>
               <button className="close-button" onClick={() => setShowLoginModal(false)}>
                 <X size={24} />
               </button>
             </div>
-            
+
             {formError && <div className="form-error">{formError}</div>}
             {formSuccess && <div className="form-success">{formSuccess}</div>}
-            
+
             <form className="login-form" onSubmit={isLoginForm ? handleLogin : handleSignup}>
               {!isLoginForm && (
                 <div className="form-group">
                   <label htmlFor="name">Full Name</label>
-                  <input 
-                    type="text" 
-                    id="name" 
-                    placeholder="Enter your full name" 
+                  <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
                     value={formData.name}
                     onChange={handleInputChange}
                     required
                   />
                 </div>
               )}
-              
+
               <div className="form-group">
                 <label htmlFor="email">Email</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  placeholder="Enter your email" 
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleInputChange}
                   required
                 />
               </div>
-              
+
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <input 
-                  type="password" 
-                  id="password" 
-                  placeholder="Enter your password" 
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleInputChange}
                   required
                 />
               </div>
-              
+
               <div className="form-actions">
-                <button 
-                  type="submit" 
-                  className="login-submit"
-                  disabled={isLoading}
-                >
-                  {isLoading ? 'Please wait...' : (isLoginForm ? 'Login' : 'Sign Up')}
+                <button type="submit" className="login-submit" disabled={isLoading}>
+                  {isLoading ? "Please wait..." : isLoginForm ? "Login" : "Sign Up"}
                 </button>
               </div>
-              
+
               <div className="form-footer">
                 <p>
                   {isLoginForm ? "Don't have an account? " : "Already have an account? "}
-                  <a href="#" onClick={(e) => { e.preventDefault(); toggleForm(); }}>
-                    {isLoginForm ? 'Sign up' : 'Login'}
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      toggleForm()
+                    }}
+                  >
+                    {isLoginForm ? "Sign up" : "Login"}
                   </a>
                 </p>
                 {isLoginForm && (
