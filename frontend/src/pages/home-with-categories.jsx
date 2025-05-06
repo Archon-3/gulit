@@ -1471,3 +1471,248 @@ return (
           </div>
         </div>
       )}
+      {/* Profile Settings Modal */}
+            {showProfileSettingsModal && (
+              <div
+                className="modal-overlay"
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 1000,
+                  padding: "1rem",
+                }}
+              >
+                <div
+                  className="login-modal"
+                  style={{
+                    maxWidth: "500px",
+                    width: "100%",
+                    maxHeight: "90vh",
+                    overflowY: "auto",
+                    backgroundColor: "var(--background-card)",
+                    borderRadius: "var(--border-radius)",
+                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+                    position: "relative",
+                  }}
+                >
+                  <div
+                    className="modal-header"
+                    style={{
+                      padding: "1rem",
+                      borderBottom: "1px solid var(--border-color)",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      position: "sticky",
+                      top: 0,
+                      backgroundColor: "var(--background-card)",
+                      zIndex: 1,
+                    }}
+                  >
+                    <h2 style={{ margin: 0 }}>Profile Settings</h2>
+                    <button
+                      className="close-button"
+                      onClick={() => {
+                        setShowProfileSettingsModal(false)
+                        setFormError("")
+                        setFormSuccess("")
+                      }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <X size={24} />
+                    </button>
+                  </div>
+      
+                  <div style={{ padding: "1rem" }}>
+                    {formError && (
+                      <div
+                        className="form-error"
+                        style={{
+                          backgroundColor: "#fee2e2",
+                          color: "#b91c1c",
+                          padding: "0.75rem",
+                          borderRadius: "var(--border-radius)",
+                          marginBottom: "1rem",
+                        }}
+                      >
+                        {formError}
+                      </div>
+                    )}
+      
+                    {formSuccess && (
+                      <div
+                        className="form-success"
+                        style={{
+                          backgroundColor: "#dcfce7",
+                          color: "#166534",
+                          padding: "0.75rem",
+                          borderRadius: "var(--border-radius)",
+                          marginBottom: "1rem",
+                        }}
+                      >
+                        {formSuccess}
+                      </div>
+                    )}
+      
+                    <form className="login-form" onSubmit={handleUpdateProfile}>
+                      <div className="form-group" style={{ marginBottom: "1rem" }}>
+                        <label htmlFor="name" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                          Full Name
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          placeholder="Enter your full name"
+                          value={profileData.name}
+                          onChange={handleProfileInputChange}
+                          required
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            borderRadius: "var(--border-radius)",
+                            border: "1px solid var(--border-color)",
+                            backgroundColor: "var(--background-light)",
+                          }}
+                        />
+                      </div>
+      
+                      <div className="form-group" style={{ marginBottom: "1.5rem" }}>
+                        <label htmlFor="email" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          placeholder="Enter your email"
+                          value={profileData.email}
+                          onChange={handleProfileInputChange}
+                          required
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            borderRadius: "var(--border-radius)",
+                            border: "1px solid var(--border-color)",
+                            backgroundColor: "var(--background-light)",
+                          }}
+                        />
+                      </div>
+      
+                      <div
+                        style={{
+                          marginTop: "1.5rem",
+                          marginBottom: "1rem",
+                          padding: "0.75rem",
+                          backgroundColor: "var(--background-light)",
+                          borderRadius: "var(--border-radius)",
+                        }}
+                      >
+                        <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1rem" }}>Change Password</h3>
+                        <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", margin: 0 }}>
+                          Leave blank if you don't want to change your password
+                        </p>
+                      </div>
+      
+                      <div className="form-group" style={{ marginBottom: "1rem" }}>
+                        <label
+                          htmlFor="currentPassword"
+                          style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}
+                        >
+                          Current Password
+                        </label>
+                        <input
+                          type="password"
+                          id="currentPassword"
+                          placeholder="Enter current password"
+                          value={profileData.currentPassword}
+                          onChange={handleProfileInputChange}
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            borderRadius: "var(--border-radius)",
+                            border: "1px solid var(--border-color)",
+                            backgroundColor: "var(--background-light)",
+                          }}
+                        />
+                      </div>
+      
+                      <div className="form-group" style={{ marginBottom: "1rem" }}>
+                        <label htmlFor="newPassword" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                          New Password
+                        </label>
+                        <input
+                          type="password"
+                          id="newPassword"
+                          placeholder="Enter new password"
+                          value={profileData.newPassword}
+                          onChange={handleProfileInputChange}
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            borderRadius: "var(--border-radius)",
+                            border: "1px solid var(--border-color)",
+                            backgroundColor: "var(--background-light)",
+                          }}
+                        />
+                      </div>
+      
+                      <div className="form-group" style={{ marginBottom: "1.5rem" }}>
+                        <label
+                          htmlFor="confirmPassword"
+                          style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}
+                        >
+                          Confirm New Password
+                        </label>
+                        <input
+                          type="password"
+                          id="confirmPassword"
+                          placeholder="Confirm new password"
+                          value={profileData.confirmPassword}
+                          onChange={handleProfileInputChange}
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            borderRadius: "var(--border-radius)",
+                            border: "1px solid var(--border-color)",
+                            backgroundColor: "var(--background-light)",
+                          }}
+                        />
+                      </div>
+      
+                      <div className="form-actions">
+                        <button
+                          type="submit"
+                          className="login-submit"
+                          disabled={isLoading}
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            backgroundColor: "var(--primary-color)",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "var(--border-radius)",
+                            cursor: isLoading ? "not-allowed" : "pointer",
+                            opacity: isLoading ? 0.7 : 1,
+                          }}
+                        >
+                          {isLoading ? "Please wait..." : "Update Profile"}
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            )}
