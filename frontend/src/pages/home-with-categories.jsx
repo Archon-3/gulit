@@ -674,3 +674,38 @@ return (
                 ))}
               </div>
             )}
+            </div>
+                      <Link to="/cart" className="cart-button">
+                        <ShoppingCart size={20} />
+                        <span>Cart ({getCartCount()})</span>
+                      </Link>
+                      {loggedInUser ? (
+                        <div className="user-menu" ref={profileRef}>
+                          <button className="user-button" onClick={() => setShowProfileDropdown(!showProfileDropdown)}>
+                            <User size={20} />
+                            <span>{loggedInUser.name || loggedInUser.email}</span>
+                            <ChevronDown size={16} />
+                          </button>
+            
+                          <AnimatePresence>
+                            {showProfileDropdown && (
+                              <motion.div
+                                className="profile-dropdown"
+                                variants={dropdownVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                                style={{
+                                  position: "absolute",
+                                  top: "100%",
+                                  right: 0,
+                                  backgroundColor: "var(--background-card)",
+                                  borderRadius: "var(--border-radius)",
+                                  boxShadow: "0 5px 15px var(--shadow-color)",
+                                  width: "200px",
+                                  zIndex: 10,
+                                  marginTop: "0.5rem",
+                                  overflow: "hidden",
+                                }}
+                              >
+                            
