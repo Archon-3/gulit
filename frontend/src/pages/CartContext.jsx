@@ -23,6 +23,33 @@ export function CartProvider({ children }) {
     }
   }, [])
 
+  // Load cart from localStorage when component mounts or when logged-in user changes
+  useEffect(() => {
+    if (loggedInUserId) {
+      const savedCart = localStorage.getItem(`cart_${loggedInUserId}`)
+      if (savedCart) {
+        setCartItems(JSON.parse(savedCart))
+      } else {
+        setCartItems([]) // Clear cart if no saved cart for this user
+      }
+    } else {
+      setCartItems([]) // Clear cart if no user is logged in
+    }
+  }, [loggedInUserId])
+
+  // Save cart to localStorage whenever it changes
+  useEffect(() => {
+    if (loggedInUserId) {
+      localStorage.setItem(`cart_${loggedInUserId}`, JSON.stringify(cartItems))
+    }
+  }, [cartItems, loggedInUserId])
+
+  // Add item to cart
+  const addToCart = (product) => {
+    if (!loggedInUserId) {
+      alert("Please log in to add items to your cart")
+      return
+    }
 
 
   // Remove item from cart
