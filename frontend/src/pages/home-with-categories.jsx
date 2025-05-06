@@ -1231,3 +1231,108 @@ return (
           <p>Address: 123 Tech Street, Digital City</p>
         </div>
       </footer>
+       {/* Add/Edit Item Modal */}
+            {showAddItemModal && (
+              <div
+                className="modal-overlay"
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 1000,
+                  padding: "1rem",
+                }}
+              >
+                <div
+                  className="login-modal"
+                  style={{
+                    maxWidth: "500px",
+                    width: "100%",
+                    maxHeight: "90vh",
+                    overflowY: "auto",
+                    backgroundColor: "var(--background-card)",
+                    borderRadius: "var(--border-radius)",
+                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+                    position: "relative",
+                  }}
+                >
+                  <div
+                    className="modal-header"
+                    style={{
+                      padding: "1rem",
+                      borderBottom: "1px solid var(--border-color)",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      position: "sticky",
+                      top: 0,
+                      backgroundColor: "var(--background-card)",
+                      zIndex: 1,
+                    }}
+                  >
+                    <h2 style={{ margin: 0 }}>{itemToEdit ? "Edit Item" : "Add New Item"}</h2>
+                    <button
+                      className="close-button"
+                      onClick={() => {
+                        setShowAddItemModal(false)
+                        setItemToEdit(null)
+                        setNewItem({
+                          name: "",
+                          description: "",
+                          price: "",
+                          image: "",
+                          category: "electronics",
+                        })
+                        setFormError("")
+                        setFormSuccess("")
+                      }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <X size={24} />
+                    </button>
+                  </div>
+      
+                  <div style={{ padding: "1rem" }}>
+                    {formError && (
+                      <div
+                        className="form-error"
+                        style={{
+                          backgroundColor: "#fee2e2",
+                          color: "#b91c1c",
+                          padding: "0.75rem",
+                          borderRadius: "var(--border-radius)",
+                          marginBottom: "1rem",
+                        }}
+                      >
+                        {formError}
+                      </div>
+                    )}
+      
+                    {formSuccess && (
+                      <div
+                        className="form-success"
+                        style={{
+                          backgroundColor: "#dcfce7",
+                          color: "#166534",
+                          padding: "0.75rem",
+                          borderRadius: "var(--border-radius)",
+                          marginBottom: "1rem",
+                        }}
+                      >
+                        {formSuccess}
+                      </div>
+                    )}
+      
