@@ -60,7 +60,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
             
-       
+            if ($stmt->affected_rows > 0) {
+                // Commit transaction
+                $conn->commit();
+                
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => "User deleted successfully. Also deleted $itemsDeleted items."
+                ]);
+            } else {
+                // Rollback transaction
+                $conn->rollback();
+                
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'User not found or already deleted'
+                ]);
+            }
             
             $stmt->close();
         } catch (Exception $e) {
