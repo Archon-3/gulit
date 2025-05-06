@@ -63,7 +63,9 @@ export default function Home({ onLogout, currentUser }) {
   const [filteredItems, setFilteredItems] = useState([])
   const [displayedMarketplaceItems, setDisplayedMarketplaceItems] = useState([])
   const [lastRotationTime, setLastRotationTime] = useState(Date.now())
+  // New state for active category
   const [activeCategory, setActiveCategory] = useState("explore")
+  // New state for category-filtered items
   const [categoryItems, setCategoryItems] = useState([])
 
   const location = useLocation()
@@ -143,11 +145,12 @@ export default function Home({ onLogout, currentUser }) {
   // Auto-rotate special deals
   useEffect(() => {
     const interval = setInterval(() => {
-      setSpecialDealIndex((prevIndex) => (prevIndex === specialDeals.length -1 ? 0 : prevIndex + 1))
+      setSpecialDealIndex((prevIndex) => (prevIndex === specialDeals.length - 1 ? 0 : prevIndex + 1))
     }, 5000)
 
     return () => clearInterval(interval)
   }, [])
+
   // Fetch user items from backend
   const fetchUserItems = async (userId) => {
     try {
@@ -434,8 +437,9 @@ export default function Home({ onLogout, currentUser }) {
       [id]: value,
     })
   }
-   // Product data
-   const featuredProducts = [
+
+  // Product data
+  const featuredProducts = [
     {
       id: 1,
       name: "Wireless Headphones",
@@ -579,7 +583,8 @@ export default function Home({ onLogout, currentUser }) {
       },
     },
   }
- // Add this function to get a random subset of items
+
+  // Add this function to get a random subset of items
   const getRandomItems = (items, count) => {
     const shuffled = [...items].sort(() => 0.5 - Math.random())
     return shuffled.slice(0, count)
@@ -619,26 +624,28 @@ export default function Home({ onLogout, currentUser }) {
       setFilteredItems([])
       return
     }
-// Filter ALL marketplace items based on search query, not just displayed ones
-const query = searchQuery.toLowerCase().trim()
-const filtered = marketplaceItems.filter(
-  (item) =>
-    item.name.toLowerCase().includes(query) || (item.description && item.description.toLowerCase().includes(query)),
-)
-setFilteredItems(filtered)
-}, [searchQuery, marketplaceItems])
 
-// Add a function to handle search input changes
-const handleSearchChange = (e) => {
-setSearchQuery(e.target.value)
-}
+    // Filter ALL marketplace items based on search query, not just displayed ones
+    const query = searchQuery.toLowerCase().trim()
+    const filtered = marketplaceItems.filter(
+      (item) =>
+        item.name.toLowerCase().includes(query) || (item.description && item.description.toLowerCase().includes(query)),
+    )
+    setFilteredItems(filtered)
+  }, [searchQuery, marketplaceItems])
 
-// Add a function to handle search form submission
-const handleSearchSubmit = (e) => {
-e.preventDefault()
-// The filtering is already handled by the useEffect
-}
-return (
+  // Add a function to handle search input changes
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value)
+  }
+
+  // Add a function to handle search form submission
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    // The filtering is already handled by the useEffect
+  }
+
+  return (
     <div className={`onboarding-container ${darkTheme ? "dark-theme" : "light-theme"}`}>
       <header className="header">
         <div className="logo">
@@ -674,41 +681,41 @@ return (
                 ))}
               </div>
             )}
-            </div>
-                      <Link to="/cart" className="cart-button">
-                        <ShoppingCart size={20} />
-                        <span>Cart ({getCartCount()})</span>
-                      </Link>
-                      {loggedInUser ? (
-                        <div className="user-menu" ref={profileRef}>
-                          <button className="user-button" onClick={() => setShowProfileDropdown(!showProfileDropdown)}>
-                            <User size={20} />
-                            <span>{loggedInUser.name || loggedInUser.email}</span>
-                            <ChevronDown size={16} />
-                          </button>
-            
-                          <AnimatePresence>
-                            {showProfileDropdown && (
-                              <motion.div
-                                className="profile-dropdown"
-                                variants={dropdownVariants}
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                                style={{
-                                  position: "absolute",
-                                  top: "100%",
-                                  right: 0,
-                                  backgroundColor: "var(--background-card)",
-                                  borderRadius: "var(--border-radius)",
-                                  boxShadow: "0 5px 15px var(--shadow-color)",
-                                  width: "200px",
-                                  zIndex: 10,
-                                  marginTop: "0.5rem",
-                                  overflow: "hidden",
-                                }}
-                              >
-                            <div
+          </div>
+          <Link to="/cart" className="cart-button">
+            <ShoppingCart size={20} />
+            <span>Cart ({getCartCount()})</span>
+          </Link>
+          {loggedInUser ? (
+            <div className="user-menu" ref={profileRef}>
+              <button className="user-button" onClick={() => setShowProfileDropdown(!showProfileDropdown)}>
+                <User size={20} />
+                <span>{loggedInUser.name || loggedInUser.email}</span>
+                <ChevronDown size={16} />
+              </button>
+
+              <AnimatePresence>
+                {showProfileDropdown && (
+                  <motion.div
+                    className="profile-dropdown"
+                    variants={dropdownVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    style={{
+                      position: "absolute",
+                      top: "100%",
+                      right: 0,
+                      backgroundColor: "var(--background-card)",
+                      borderRadius: "var(--border-radius)",
+                      boxShadow: "0 5px 15px var(--shadow-color)",
+                      width: "200px",
+                      zIndex: 10,
+                      marginTop: "0.5rem",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
                       className="profile-dropdown-item"
                       onClick={() => {
                         setShowProfileSettingsModal(true)
@@ -726,110 +733,112 @@ return (
                       <Settings size={18} />
                       <span>Profile Settings</span>
                     </div>
-                      {/* Only show Admin Dashboard link for admin users */}
-                                          {(loggedInUser?.isAdmin || loggedInUser?.email === "abeni@gmail.com") && (
-                                            <Link
-                                              to="/admin"
-                                              className="profile-dropdown-item"
-                                              onClick={() => setShowProfileDropdown(false)}
-                                              style={{
-                                                padding: "0.75rem 1rem",
-                                                display: "flex",
-                                                alignItems: "center",
-                                                gap: "0.5rem",
-                                                cursor: "pointer",
-                                                transition: "background-color var(--transition-speed)",
-                                                textDecoration: "none",
-                                                color: "var(--text-color)",
-                                              }}
-                                            >
-                                              <Users size={18} />
-                                              <span>Admin Dashboard</span>
-                                            </Link>
-                                          )}
-                      
-                                          <div
-                                            className="profile-dropdown-item"
-                                            onClick={() => {
-                                              setShowAddItemModal(true)
-                                              setShowProfileDropdown(false)
-                                            }}
-                                            style={{
-                                              padding: "0.75rem 1rem",
-                                              display: "flex",
-                                              alignItems: "center",
-                                              gap: "0.5rem",
-                                              cursor: "pointer",
-                                              transition: "background-color var(--transition-speed)",
-                                            }}
-                                          >
-                                            <PlusCircle size={18} />
-                                            <span>Add Item</span>
-                                          </div>
-                      
-                                          <div
-                                            className="profile-dropdown-item"
-                                            onClick={() => {
-                                              setShowMyItemsModal(true)
-                                              setShowProfileDropdown(false)
-                                            }}
-                                            style={{
-                                              padding: "0.75rem 1rem",
-                                              display: "flex",
-                                              alignItems: "center",
-                                              gap: "0.5rem",
-                                              cursor: "pointer",
-                                              transition: "background-color var(--transition-speed)",
-                                            }}
-                                          >
-                                            <Package size={18} />
-                                            <span>My Items</span>
-                                          </div>
-                      
-                                          <div
-                                            className="profile-dropdown-item"
-                                            style={{
-                                              padding: "0.75rem 1rem",
-                                              display: "flex",
-                                              alignItems: "center",
-                                              gap: "0.5rem",
-                                              cursor: "pointer",
-                                              transition: "background-color var(--transition-speed)",
-                                            }}
-                                          >
-                                            <ShoppingBag size={18} />
-                                            <span>Order History</span>
-                                          </div>
-                      
-                                          <div
-                                            className="profile-dropdown-item"
-                                            onClick={handleLogout}
-                                            style={{
-                                              padding: "0.75rem 1rem",
-                                              display: "flex",
-                                              alignItems: "center",
-                                              gap: "0.5rem",
-                                              cursor: "pointer",
-                                              transition: "background-color var(--transition-speed)",
-                                              borderTop: "1px solid var(--border-color)",
-                                            }}
-                                          >
-                                            <LogOut size={18} />
-                                            <span>Logout</span>
-                                          </div>
-                                        </motion.div>
-                                      )}
-                                    </AnimatePresence>
-                                  </div>
-                                ) : (
-                                  <button className="login-button" onClick={() => setShowLoginModal(true)}>
-                                    <User size={20} />
-                                    <span>Login</span>
-                                  </button>
-                                )}
-                              </div>
-                            </header>
-                      {/* New Category Navigation */}
+
+                    {/* Only show Admin Dashboard link for admin users */}
+                    {(loggedInUser?.isAdmin || loggedInUser?.email === "abeni@gmail.com") && (
+                      <Link
+                        to="/admin"
+                        className="profile-dropdown-item"
+                        onClick={() => setShowProfileDropdown(false)}
+                        style={{
+                          padding: "0.75rem 1rem",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                          cursor: "pointer",
+                          transition: "background-color var(--transition-speed)",
+                          textDecoration: "none",
+                          color: "var(--text-color)",
+                        }}
+                      >
+                        <Users size={18} />
+                        <span>Admin Dashboard</span>
+                      </Link>
+                    )}
+
+                    <div
+                      className="profile-dropdown-item"
+                      onClick={() => {
+                        setShowAddItemModal(true)
+                        setShowProfileDropdown(false)
+                      }}
+                      style={{
+                        padding: "0.75rem 1rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        cursor: "pointer",
+                        transition: "background-color var(--transition-speed)",
+                      }}
+                    >
+                      <PlusCircle size={18} />
+                      <span>Add Item</span>
+                    </div>
+
+                    <div
+                      className="profile-dropdown-item"
+                      onClick={() => {
+                        setShowMyItemsModal(true)
+                        setShowProfileDropdown(false)
+                      }}
+                      style={{
+                        padding: "0.75rem 1rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        cursor: "pointer",
+                        transition: "background-color var(--transition-speed)",
+                      }}
+                    >
+                      <Package size={18} />
+                      <span>My Items</span>
+                    </div>
+
+                    <div
+                      className="profile-dropdown-item"
+                      style={{
+                        padding: "0.75rem 1rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        cursor: "pointer",
+                        transition: "background-color var(--transition-speed)",
+                      }}
+                    >
+                      <ShoppingBag size={18} />
+                      <span>Order History</span>
+                    </div>
+
+                    <div
+                      className="profile-dropdown-item"
+                      onClick={handleLogout}
+                      style={{
+                        padding: "0.75rem 1rem",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        cursor: "pointer",
+                        transition: "background-color var(--transition-speed)",
+                        borderTop: "1px solid var(--border-color)",
+                      }}
+                    >
+                      <LogOut size={18} />
+                      <span>Logout</span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <button className="login-button" onClick={() => setShowLoginModal(true)}>
+              <User size={20} />
+              <span>Login</span>
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* New Category Navigation */}
       <nav className="category-nav">
         <div className="category-container">
           <button
@@ -860,6 +869,7 @@ return (
             <button className="cta-button">Shop Now</button>
           </div>
         </section>
+
         {searchQuery.trim() !== "" && (
           <section className="featured-section">
             <h2>Search Results</h2>
@@ -932,6 +942,7 @@ return (
             )}
           </section>
         )}
+
         {/* Category Items Section - Only show when a category is selected */}
         {activeCategory !== "explore" && categoryItems.length > 0 && (
           <section className="featured-section">
@@ -1000,57 +1011,59 @@ return (
             )}
           </section>
         )}
+
         {/* Only show these sections when in Explore mode or no category is selected */}
-                {activeCategory === "explore" && (
-                  <>
-                    {/* Special Deals Section with Animation */}
-                    <section className="special-deals-section">
-                      <h2>Special Deal</h2>
-                      <div className="special-deals-header">
-                        <p>Limited time offers on our best products</p>
+        {activeCategory === "explore" && (
+          <>
+            {/* Special Deals Section with Animation */}
+            <section className="special-deals-section">
+              <h2>Special Deal</h2>
+              <div className="special-deals-header">
+                <p>Limited time offers on our best products</p>
+              </div>
+              <div className="special-deals">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={specialDealIndex}
+                    className="deal-card"
+                    variants={dealCardVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <div className="deal-badge">SPECIAL OFFER</div>
+                    <div className="deal-discount-badge">
+                      {Math.round(
+                        ((specialDeals[specialDealIndex].originalPrice - specialDeals[specialDealIndex].salePrice) /
+                          specialDeals[specialDealIndex].originalPrice) *
+                          100,
+                      )}
+                      % OFF
+                    </div>
+                    <img
+                      src={specialDeals[specialDealIndex].image || "/placeholder.svg"}
+                      alt={specialDeals[specialDealIndex].name}
+                    />
+                    <div className="deal-content">
+                      <h3>{specialDeals[specialDealIndex].name}</h3>
+                      <p className="product-description">{specialDeals[specialDealIndex].description}</p>
+                      <div className="deal-price">
+                        <p className="original-price">${specialDeals[specialDealIndex].originalPrice.toFixed(2)}</p>
+                        <p className="sale-price">${specialDeals[specialDealIndex].salePrice.toFixed(2)}</p>
                       </div>
-                      <div className="special-deals">
-                        <AnimatePresence mode="wait">
-                          <motion.div
-                            key={specialDealIndex}
-                            className="deal-card"
-                            variants={dealCardVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
-                          >
-                            <div className="deal-badge">SPECIAL OFFER</div>
-                            <div className="deal-discount-badge">
-                              {Math.round(
-                                ((specialDeals[specialDealIndex].originalPrice - specialDeals[specialDealIndex].salePrice) /
-                                  specialDeals[specialDealIndex].originalPrice) *
-                                  100,
-                              )}
-                              % OFF
-                            </div>
-                            <img
-                              src={specialDeals[specialDealIndex].image || "/placeholder.svg"}
-                              alt={specialDeals[specialDealIndex].name}
-                            />
-                            <div className="deal-content">
-                              <h3>{specialDeals[specialDealIndex].name}</h3>
-                              <p className="product-description">{specialDeals[specialDealIndex].description}</p>
-                              <div className="deal-price">
-                                <p className="original-price">${specialDeals[specialDealIndex].originalPrice.toFixed(2)}</p>
-                                <p className="sale-price">${specialDeals[specialDealIndex].salePrice.toFixed(2)}</p>
-                              </div>
-                              <div className="product-actions">
-                                <button className="buy-button">Buy Now</button>
-                                <button className="cart-add-button" onClick={() => addToCart(specialDeals[specialDealIndex])}>
-                                  Add to Cart
-                                </button>
-                              </div>
-                            </div>
-                          </motion.div>
-                        </AnimatePresence>
+                      <div className="product-actions">
+                        <button className="buy-button">Buy Now</button>
+                        <button className="cart-add-button" onClick={() => addToCart(specialDeals[specialDealIndex])}>
+                          Add to Cart
+                        </button>
                       </div>
-                    </section>
-                    <section className="featured-section">
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </section>
+
+            <section className="featured-section">
               <h2>Featured Products</h2>
               <div className="featured-products">
                 {featuredProducts.map((product) => (
@@ -1069,6 +1082,7 @@ return (
                 ))}
               </div>
             </section>
+
             {/* Marketplace Items Section - showing limited items from all sellers */}
             {marketplaceItems.length > 0 && (
               <section className="featured-section">
@@ -1136,6 +1150,7 @@ return (
                 </div>
               </section>
             )}
+
             {/* Only show "Your Items" section if the user has items */}
             {userItems.length > 0 && (
               <section className="featured-section">
@@ -1201,6 +1216,7 @@ return (
           </>
         )}
       </main>
+
       <footer className="footer">
         <div className="footer-section">
           <h3>About Us</h3>
@@ -1231,111 +1247,113 @@ return (
           <p>Address: 123 Tech Street, Digital City</p>
         </div>
       </footer>
-       {/* Add/Edit Item Modal */}
-            {showAddItemModal && (
-              <div
-                className="modal-overlay"
+
+      {/* Add/Edit Item Modal */}
+      {showAddItemModal && (
+        <div
+          className="modal-overlay"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+            padding: "1rem",
+          }}
+        >
+          <div
+            className="login-modal"
+            style={{
+              maxWidth: "500px",
+              width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              backgroundColor: "var(--background-card)",
+              borderRadius: "var(--border-radius)",
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+              position: "relative",
+            }}
+          >
+            <div
+              className="modal-header"
+              style={{
+                padding: "1rem",
+                borderBottom: "1px solid var(--border-color)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                position: "sticky",
+                top: 0,
+                backgroundColor: "var(--background-card)",
+                zIndex: 1,
+              }}
+            >
+              <h2 style={{ margin: 0 }}>{itemToEdit ? "Edit Item" : "Add New Item"}</h2>
+              <button
+                className="close-button"
+                onClick={() => {
+                  setShowAddItemModal(false)
+                  setItemToEdit(null)
+                  setNewItem({
+                    name: "",
+                    description: "",
+                    price: "",
+                    image: "",
+                    category: "electronics",
+                  })
+                  setFormError("")
+                  setFormSuccess("")
+                }}
                 style={{
-                  position: "fixed",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
                   display: "flex",
-                  justifyContent: "center",
                   alignItems: "center",
-                  zIndex: 1000,
-                  padding: "1rem",
+                  justifyContent: "center",
                 }}
               >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div style={{ padding: "1rem" }}>
+              {formError && (
                 <div
-                  className="login-modal"
+                  className="form-error"
                   style={{
-                    maxWidth: "500px",
-                    width: "100%",
-                    maxHeight: "90vh",
-                    overflowY: "auto",
-                    backgroundColor: "var(--background-card)",
+                    backgroundColor: "#fee2e2",
+                    color: "#b91c1c",
+                    padding: "0.75rem",
                     borderRadius: "var(--border-radius)",
-                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-                    position: "relative",
+                    marginBottom: "1rem",
                   }}
                 >
-                  <div
-                    className="modal-header"
-                    style={{
-                      padding: "1rem",
-                      borderBottom: "1px solid var(--border-color)",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      position: "sticky",
-                      top: 0,
-                      backgroundColor: "var(--background-card)",
-                      zIndex: 1,
-                    }}
-                  >
-                    <h2 style={{ margin: 0 }}>{itemToEdit ? "Edit Item" : "Add New Item"}</h2>
-                    <button
-                      className="close-button"
-                      onClick={() => {
-                        setShowAddItemModal(false)
-                        setItemToEdit(null)
-                        setNewItem({
-                          name: "",
-                          description: "",
-                          price: "",
-                          image: "",
-                          category: "electronics",
-                        })
-                        setFormError("")
-                        setFormSuccess("")
-                      }}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <X size={24} />
-                    </button>
-                  </div>
-      
-                  <div style={{ padding: "1rem" }}>
-                    {formError && (
-                      <div
-                        className="form-error"
-                        style={{
-                          backgroundColor: "#fee2e2",
-                          color: "#b91c1c",
-                          padding: "0.75rem",
-                          borderRadius: "var(--border-radius)",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        {formError}
-                      </div>
-                    )}
-      
-                    {formSuccess && (
-                      <div
-                        className="form-success"
-                        style={{
-                          backgroundColor: "#dcfce7",
-                          color: "#166534",
-                          padding: "0.75rem",
-                          borderRadius: "var(--border-radius)",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        {formSuccess}
-                      </div>
-                    )}
-                    <form className="login-form" onSubmit={handleAddItem}>
+                  {formError}
+                </div>
+              )}
+
+              {formSuccess && (
+                <div
+                  className="form-success"
+                  style={{
+                    backgroundColor: "#dcfce7",
+                    color: "#166534",
+                    padding: "0.75rem",
+                    borderRadius: "var(--border-radius)",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  {formSuccess}
+                </div>
+              )}
+
+              <form className="login-form" onSubmit={handleAddItem}>
                 <div className="form-group" style={{ marginBottom: "1rem" }}>
                   <label htmlFor="name" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
                     Product Name
@@ -1471,440 +1489,443 @@ return (
           </div>
         </div>
       )}
+
       {/* Profile Settings Modal */}
-            {showProfileSettingsModal && (
-              <div
-                className="modal-overlay"
+      {showProfileSettingsModal && (
+        <div
+          className="modal-overlay"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+            padding: "1rem",
+          }}
+        >
+          <div
+            className="login-modal"
+            style={{
+              maxWidth: "500px",
+              width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              backgroundColor: "var(--background-card)",
+              borderRadius: "var(--border-radius)",
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+              position: "relative",
+            }}
+          >
+            <div
+              className="modal-header"
+              style={{
+                padding: "1rem",
+                borderBottom: "1px solid var(--border-color)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                position: "sticky",
+                top: 0,
+                backgroundColor: "var(--background-card)",
+                zIndex: 1,
+              }}
+            >
+              <h2 style={{ margin: 0 }}>Profile Settings</h2>
+              <button
+                className="close-button"
+                onClick={() => {
+                  setShowProfileSettingsModal(false)
+                  setFormError("")
+                  setFormSuccess("")
+                }}
                 style={{
-                  position: "fixed",
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
                   display: "flex",
-                  justifyContent: "center",
                   alignItems: "center",
-                  zIndex: 1000,
-                  padding: "1rem",
+                  justifyContent: "center",
                 }}
               >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div style={{ padding: "1rem" }}>
+              {formError && (
                 <div
-                  className="login-modal"
+                  className="form-error"
                   style={{
-                    maxWidth: "500px",
-                    width: "100%",
-                    maxHeight: "90vh",
-                    overflowY: "auto",
-                    backgroundColor: "var(--background-card)",
+                    backgroundColor: "#fee2e2",
+                    color: "#b91c1c",
+                    padding: "0.75rem",
                     borderRadius: "var(--border-radius)",
-                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-                    position: "relative",
+                    marginBottom: "1rem",
                   }}
                 >
-                  <div
-                    className="modal-header"
+                  {formError}
+                </div>
+              )}
+
+              {formSuccess && (
+                <div
+                  className="form-success"
+                  style={{
+                    backgroundColor: "#dcfce7",
+                    color: "#166534",
+                    padding: "0.75rem",
+                    borderRadius: "var(--border-radius)",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  {formSuccess}
+                </div>
+              )}
+
+              <form className="login-form" onSubmit={handleUpdateProfile}>
+                <div className="form-group" style={{ marginBottom: "1rem" }}>
+                  <label htmlFor="name" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
+                    value={profileData.name}
+                    onChange={handleProfileInputChange}
+                    required
                     style={{
-                      padding: "1rem",
-                      borderBottom: "1px solid var(--border-color)",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      position: "sticky",
-                      top: 0,
-                      backgroundColor: "var(--background-card)",
-                      zIndex: 1,
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "var(--border-radius)",
+                      border: "1px solid var(--border-color)",
+                      backgroundColor: "var(--background-light)",
+                    }}
+                  />
+                </div>
+
+                <div className="form-group" style={{ marginBottom: "1.5rem" }}>
+                  <label htmlFor="email" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    value={profileData.email}
+                    onChange={handleProfileInputChange}
+                    required
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "var(--border-radius)",
+                      border: "1px solid var(--border-color)",
+                      backgroundColor: "var(--background-light)",
+                    }}
+                  />
+                </div>
+
+                <div
+                  style={{
+                    marginTop: "1.5rem",
+                    marginBottom: "1rem",
+                    padding: "0.75rem",
+                    backgroundColor: "var(--background-light)",
+                    borderRadius: "var(--border-radius)",
+                  }}
+                >
+                  <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1rem" }}>Change Password</h3>
+                  <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", margin: 0 }}>
+                    Leave blank if you don't want to change your password
+                  </p>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: "1rem" }}>
+                  <label
+                    htmlFor="currentPassword"
+                    style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}
+                  >
+                    Current Password
+                  </label>
+                  <input
+                    type="password"
+                    id="currentPassword"
+                    placeholder="Enter current password"
+                    value={profileData.currentPassword}
+                    onChange={handleProfileInputChange}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "var(--border-radius)",
+                      border: "1px solid var(--border-color)",
+                      backgroundColor: "var(--background-light)",
+                    }}
+                  />
+                </div>
+
+                <div className="form-group" style={{ marginBottom: "1rem" }}>
+                  <label htmlFor="newPassword" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
+                    New Password
+                  </label>
+                  <input
+                    type="password"
+                    id="newPassword"
+                    placeholder="Enter new password"
+                    value={profileData.newPassword}
+                    onChange={handleProfileInputChange}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "var(--border-radius)",
+                      border: "1px solid var(--border-color)",
+                      backgroundColor: "var(--background-light)",
+                    }}
+                  />
+                </div>
+
+                <div className="form-group" style={{ marginBottom: "1.5rem" }}>
+                  <label
+                    htmlFor="confirmPassword"
+                    style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}
+                  >
+                    Confirm New Password
+                  </label>
+                  <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm new password"
+                    value={profileData.confirmPassword}
+                    onChange={handleProfileInputChange}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "var(--border-radius)",
+                      border: "1px solid var(--border-color)",
+                      backgroundColor: "var(--background-light)",
+                    }}
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button
+                    type="submit"
+                    className="login-submit"
+                    disabled={isLoading}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      backgroundColor: "var(--primary-color)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "var(--border-radius)",
+                      cursor: isLoading ? "not-allowed" : "pointer",
+                      opacity: isLoading ? 0.7 : 1,
                     }}
                   >
-                    <h2 style={{ margin: 0 }}>Profile Settings</h2>
-                    <button
-                      className="close-button"
-                      onClick={() => {
-                        setShowProfileSettingsModal(false)
-                        setFormError("")
-                        setFormSuccess("")
-                      }}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <X size={24} />
-                    </button>
-                  </div>
-      
-                  <div style={{ padding: "1rem" }}>
-                    {formError && (
-                      <div
-                        className="form-error"
-                        style={{
-                          backgroundColor: "#fee2e2",
-                          color: "#b91c1c",
-                          padding: "0.75rem",
-                          borderRadius: "var(--border-radius)",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        {formError}
-                      </div>
-                    )}
-      
-                    {formSuccess && (
-                      <div
-                        className="form-success"
-                        style={{
-                          backgroundColor: "#dcfce7",
-                          color: "#166534",
-                          padding: "0.75rem",
-                          borderRadius: "var(--border-radius)",
-                          marginBottom: "1rem",
-                        }}
-                      >
-                        {formSuccess}
-                      </div>
-                    )}
-      
-                    <form className="login-form" onSubmit={handleUpdateProfile}>
-                      <div className="form-group" style={{ marginBottom: "1rem" }}>
-                        <label htmlFor="name" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
-                          Full Name
-                        </label>
-                        <input
-                          type="text"
-                          id="name"
-                          placeholder="Enter your full name"
-                          value={profileData.name}
-                          onChange={handleProfileInputChange}
-                          required
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "var(--border-radius)",
-                            border: "1px solid var(--border-color)",
-                            backgroundColor: "var(--background-light)",
-                          }}
-                        />
-                      </div>
-      
-                      <div className="form-group" style={{ marginBottom: "1.5rem" }}>
-                        <label htmlFor="email" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
-                          Email
-                        </label>
-                        <input
-                          type="email"
-                          id="email"
-                          placeholder="Enter your email"
-                          value={profileData.email}
-                          onChange={handleProfileInputChange}
-                          required
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "var(--border-radius)",
-                            border: "1px solid var(--border-color)",
-                            backgroundColor: "var(--background-light)",
-                          }}
-                        />
-                      </div>
-      
-                      <div
-                        style={{
-                          marginTop: "1.5rem",
-                          marginBottom: "1rem",
-                          padding: "0.75rem",
-                          backgroundColor: "var(--background-light)",
-                          borderRadius: "var(--border-radius)",
-                        }}
-                      >
-                        <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1rem" }}>Change Password</h3>
-                        <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", margin: 0 }}>
-                          Leave blank if you don't want to change your password
-                        </p>
-                      </div>
-      
-                      <div className="form-group" style={{ marginBottom: "1rem" }}>
-                        <label
-                          htmlFor="currentPassword"
-                          style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}
-                        >
-                          Current Password
-                        </label>
-                        <input
-                          type="password"
-                          id="currentPassword"
-                          placeholder="Enter current password"
-                          value={profileData.currentPassword}
-                          onChange={handleProfileInputChange}
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "var(--border-radius)",
-                            border: "1px solid var(--border-color)",
-                            backgroundColor: "var(--background-light)",
-                          }}
-                        />
-                      </div>
-      
-                      <div className="form-group" style={{ marginBottom: "1rem" }}>
-                        <label htmlFor="newPassword" style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}>
-                          New Password
-                        </label>
-                        <input
-                          type="password"
-                          id="newPassword"
-                          placeholder="Enter new password"
-                          value={profileData.newPassword}
-                          onChange={handleProfileInputChange}
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "var(--border-radius)",
-                            border: "1px solid var(--border-color)",
-                            backgroundColor: "var(--background-light)",
-                          }}
-                        />
-                      </div>
-      
-                      <div className="form-group" style={{ marginBottom: "1.5rem" }}>
-                        <label
-                          htmlFor="confirmPassword"
-                          style={{ display: "block", marginBottom: "0.5rem", fontWeight: "500" }}
-                        >
-                          Confirm New Password
-                        </label>
-                        <input
-                          type="password"
-                          id="confirmPassword"
-                          placeholder="Confirm new password"
-                          value={profileData.confirmPassword}
-                          onChange={handleProfileInputChange}
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "var(--border-radius)",
-                            border: "1px solid var(--border-color)",
-                            backgroundColor: "var(--background-light)",
-                          }}
-                        />
-                      </div>
-      
-                      <div className="form-actions">
-                        <button
-                          type="submit"
-                          className="login-submit"
-                          disabled={isLoading}
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            backgroundColor: "var(--primary-color)",
-                            color: "white",
-                            border: "none",
-                            borderRadius: "var(--border-radius)",
-                            cursor: isLoading ? "not-allowed" : "pointer",
-                            opacity: isLoading ? 0.7 : 1,
-                          }}
-                        >
-                          {isLoading ? "Please wait..." : "Update Profile"}
-                        </button>
-                      </div>
-                    </form>
-                  </div>
+                    {isLoading ? "Please wait..." : "Update Profile"}
+                  </button>
                 </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* My Items Modal */}
+      {showMyItemsModal && (
+        <div
+          className="modal-overlay"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+            padding: "1rem",
+          }}
+        >
+          <div
+            className="login-modal"
+            style={{
+              maxWidth: "800px",
+              width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
+              backgroundColor: "var(--background-card)",
+              borderRadius: "var(--border-radius)",
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
+              position: "relative",
+            }}
+          >
+            <div
+              className="modal-header"
+              style={{
+                padding: "1rem",
+                borderBottom: "1px solid var(--border-color)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                position: "sticky",
+                top: 0,
+                backgroundColor: "var(--background-card)",
+                zIndex: 1,
+              }}
+            >
+              <h2 style={{ margin: 0 }}>My Items</h2>
+              <button
+                className="close-button"
+                onClick={() => setShowMyItemsModal(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            {userItems.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "2rem" }}>
+                <Package size={48} style={{ color: "var(--text-secondary)", margin: "0 auto 1rem" }} />
+                <h3>You haven't added any items yet</h3>
+                <p style={{ color: "var(--text-secondary)", marginBottom: "1.5rem" }}>
+                  Start selling by adding your first item
+                </p>
+                <button
+                  className="cta-button"
+                  onClick={() => {
+                    setShowMyItemsModal(false)
+                    setShowAddItemModal(true)
+                  }}
+                  style={{
+                    padding: "0.75rem 1.5rem",
+                    backgroundColor: "var(--primary-color)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "var(--border-radius)",
+                    cursor: "pointer",
+                  }}
+                >
+                  Add Item
+                </button>
               </div>
-            )}
-            {/* My Items Modal */}
-                  {showMyItemsModal && (
-                    <div
-                      className="modal-overlay"
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 1000,
-                        padding: "1rem",
-                      }}
-                    >
-                      <div
-                        className="login-modal"
-                        style={{
-                          maxWidth: "800px",
-                          width: "100%",
-                          maxHeight: "90vh",
-                          overflowY: "auto",
-                          backgroundColor: "var(--background-card)",
-                          borderRadius: "var(--border-radius)",
-                          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
-                          position: "relative",
-                        }}
-                      >
-                        <div
-                          className="modal-header"
-                          style={{
-                            padding: "1rem",
-                            borderBottom: "1px solid var(--border-color)",
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            position: "sticky",
-                            top: 0,
-                            backgroundColor: "var(--background-card)",
-                            zIndex: 1,
-                          }}
-                        >
-                          <h2 style={{ margin: 0 }}>My Items</h2>
-                          <button
-                            className="close-button"
-                            onClick={() => setShowMyItemsModal(false)}
-                            style={{
-                              background: "none",
-                              border: "none",
-                              cursor: "pointer",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <X size={24} />
-                          </button>
-                        </div>
-            
-                        {userItems.length === 0 ? (
-                          <div style={{ textAlign: "center", padding: "2rem" }}>
-                            <Package size={48} style={{ color: "var(--text-secondary)", margin: "0 auto 1rem" }} />
-                            <h3>You haven't added any items yet</h3>
-                            <p style={{ color: "var(--text-secondary)", marginBottom: "1.5rem" }}>
-                              Start selling by adding your first item
-                            </p>
-                            <button
-                              className="cta-button"
-                              onClick={() => {
-                                setShowMyItemsModal(false)
-                                setShowAddItemModal(true)
-                              }}
-                              style={{
-                                padding: "0.75rem 1.5rem",
-                                backgroundColor: "var(--primary-color)",
-                                color: "white",
-                                border: "none",
-                                borderRadius: "var(--border-radius)",
-                                cursor: "pointer",
-                              }}
-                            >
-                              Add Item
-                            </button>
-                          </div>
-                        ) : (
-                          <div style={{ padding: "1rem" }}>
-                            <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "flex-end" }}>
+            ) : (
+              <div style={{ padding: "1rem" }}>
+                <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "flex-end" }}>
+                  <button
+                    className="cta-button"
+                    onClick={() => {
+                      setShowMyItemsModal(false)
+                      setShowAddItemModal(true)
+                    }}
+                    style={{
+                      padding: "0.75rem 1.5rem",
+                      backgroundColor: "var(--primary-color)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "var(--border-radius)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Add New Item
+                  </button>
+                </div>
+
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
+                    <thead>
+                      <tr style={{ borderBottom: "1px solid var(--border-color)" }}>
+                        <th style={{ padding: "0.75rem", textAlign: "left" }}>Image</th>
+                        <th style={{ padding: "0.75rem", textAlign: "left" }}>Name</th>
+                        <th style={{ padding: "0.75rem", textAlign: "left" }}>Category</th>
+                        <th style={{ padding: "0.75rem", textAlign: "left" }}>Price</th>
+                        <th style={{ padding: "0.75rem", textAlign: "left" }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {userItems.map((item) => (
+                        <tr key={item.id} style={{ borderBottom: "1px solid var(--border-color)" }}>
+                          <td style={{ padding: "0.75rem" }}>
+                            <img
+                              src={item.image || "/placeholder.svg"}
+                              alt={item.name}
+                              style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
+                            />
+                          </td>
+                          <td style={{ padding: "0.75rem" }}>{item.name}</td>
+                          <td style={{ padding: "0.75rem" }}>
+                            {item.category
+                              ? item.category.charAt(0).toUpperCase() + item.category.slice(1)
+                              : "Electronics"}
+                          </td>
+                          <td style={{ padding: "0.75rem" }}>${Number.parseFloat(item.price).toFixed(2)}</td>
+                          <td style={{ padding: "0.75rem" }}>
+                            <div style={{ display: "flex", gap: "0.5rem" }}>
                               <button
-                                className="cta-button"
-                                onClick={() => {
-                                  setShowMyItemsModal(false)
-                                  setShowAddItemModal(true)
-                                }}
+                                onClick={() => handleEditItem(item)}
                                 style={{
-                                  padding: "0.75rem 1.5rem",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  padding: "0.5rem",
                                   backgroundColor: "var(--primary-color)",
                                   color: "white",
                                   border: "none",
-                                  borderRadius: "var(--border-radius)",
+                                  borderRadius: "4px",
                                   cursor: "pointer",
                                 }}
+                                aria-label="Edit item"
                               >
-                                Add New Item
+                                <Edit size={16} />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setItemToDelete(item)
+                                  setShowDeleteConfirmModal(true)
+                                }}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  padding: "0.5rem",
+                                  backgroundColor: "#ef4444",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  cursor: "pointer",
+                                }}
+                                aria-label="Delete item"
+                              >
+                                <Trash2 size={16} />
                               </button>
                             </div>
-            
-                            <div style={{ overflowX: "auto" }}>
-                              <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "600px" }}>
-                                <thead>
-                                  <tr style={{ borderBottom: "1px solid var(--border-color)" }}>
-                                    <th style={{ padding: "0.75rem", textAlign: "left" }}>Image</th>
-                                    <th style={{ padding: "0.75rem", textAlign: "left" }}>Name</th>
-                                    <th style={{ padding: "0.75rem", textAlign: "left" }}>Category</th>
-                                    <th style={{ padding: "0.75rem", textAlign: "left" }}>Price</th>
-                                    <th style={{ padding: "0.75rem", textAlign: "left" }}>Actions</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {userItems.map((item) => (
-                                    <tr key={item.id} style={{ borderBottom: "1px solid var(--border-color)" }}>
-                                      <td style={{ padding: "0.75rem" }}>
-                                        <img
-                                          src={item.image || "/placeholder.svg"}
-                                          alt={item.name}
-                                          style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
-                                        />
-                                      </td>
-                                      <td style={{ padding: "0.75rem" }}>{item.name}</td>
-                                      <td style={{ padding: "0.75rem" }}>
-                                        {item.category
-                                          ? item.category.charAt(0).toUpperCase() + item.category.slice(1)
-                                          : "Electronics"}
-                                      </td>
-                                      <td style={{ padding: "0.75rem" }}>${Number.parseFloat(item.price).toFixed(2)}</td>
-                                      <td style={{ padding: "0.75rem" }}>
-                                        <div style={{ display: "flex", gap: "0.5rem" }}>
-                                          <button
-                                            onClick={() => handleEditItem(item)}
-                                            style={{
-                                              display: "flex",
-                                              alignItems: "center",
-                                              justifyContent: "center",
-                                              padding: "0.5rem",
-                                              backgroundColor: "var(--primary-color)",
-                                              color: "white",
-                                              border: "none",
-                                              borderRadius: "4px",
-                                              cursor: "pointer",
-                                            }}
-                                            aria-label="Edit item"
-                                          >
-                                            <Edit size={16} />
-                                          </button>
-                                          <button
-                                            onClick={() => {
-                                              setItemToDelete(item)
-                                              setShowDeleteConfirmModal(true)
-                                            }}
-                                            style={{
-                                              display: "flex",
-                                              alignItems: "center",
-                                              justifyContent: "center",
-                                              padding: "0.5rem",
-                                              backgroundColor: "#ef4444",
-                                              color: "white",
-                                              border: "none",
-                                              borderRadius: "4px",
-                                              cursor: "pointer",
-                                            }}
-                                            aria-label="Delete item"
-                                          >
-                                            <Trash2 size={16} />
-                                          </button>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-            {/* Delete Confirmation Modal */}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
       {showDeleteConfirmModal && (
         <div
           className="modal-overlay"
