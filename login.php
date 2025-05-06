@@ -31,7 +31,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $data['email'];
         $password = $data['password'];
         
-        // Prepare SQL statement to prevent SQL injection
+        // Check for admin credentials
+        if ($email === "abeni@gmail.com" && $password === "@@@@@@@") {
+            file_put_contents('debug.log', date('Y-m-d H:i:s') . " Admin login successful\n", FILE_APPEND);
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Admin login successful',
+                'user' => [
+                    'id' => 999,
+                    'name' => 'Admin User',
+                    'email' => 'abeni@gmail.com',
+                    'isAdmin' => true
+                ]
+            ]);
+            exit(); // Exit after admin login to prevent regular user authentication
+        }
+        
+        // Regular user authentication
         $stmt = $conn->prepare("SELECT id, email, password FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
