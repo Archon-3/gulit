@@ -383,7 +383,31 @@ export default function OnboardingPage({ onLogin }) {
             <p>Limited time offers on our best products</p>
           </div>
           <div className="special-deals">
-           
+            {specialDeals.map((deal) => (
+              <div className="deal-card" key={deal.id}>
+                <div className="deal-badge">SPECIAL OFFER</div>
+                <div className="deal-discount-badge">
+                  {Math.round(((deal.originalPrice - deal.salePrice) / deal.originalPrice) * 100)}% OFF
+                </div>
+                <img src={deal.image || "/placeholder.svg"} alt={deal.name} />
+                <div className="deal-content">
+                  <h3>{deal.name}</h3>
+                  <p className="product-description">{deal.description}</p>
+                  <div className="deal-price">
+                    <p className="original-price">${deal.originalPrice.toFixed(2)}</p>
+                    <p className="sale-price">${deal.salePrice.toFixed(2)}</p>
+                  </div>
+                  <div className="product-actions">
+                    <button className="buy-button" onClick={() => setShowLoginModal(true)}>
+                      Buy Now
+                    </button>
+                    <button className="cart-add-button" onClick={() => setShowLoginModal(true)}>
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
