@@ -21,7 +21,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $json_data = file_get_contents('php://input');
     $data = json_decode($json_data, true);
     
-  
+    // Check if required fields are present
+    if (isset($data['item_id'])) {
+        $item_id = $data['item_id'];
+        
+        try {
+            // Prepare SQL statement to delete the item
+            $stmt = $conn->prepare("DELETE FROM items WHERE id = ?");
+            $stmt->bind_param("i", $item_id);
+            $stmt->execute();
+            
+           
+            
+            $stmt->close();
+        } catch (Exception $e) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to delete item: ' . $e->getMessage()
+            ]);
+        }
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Item ID is required'
+        ]);
+    }
 } else {
     echo json_encode([
         'status' => 'error',
