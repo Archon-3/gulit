@@ -119,6 +119,54 @@ body {
   color: var(--text-secondary);
 }
 
+/* Category Navigation Styles */
+.category-nav {
+  display: flex;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+  margin: 0 1rem;
+  flex-grow: 1;
+}
+
+.category-nav::-webkit-scrollbar {
+  display: none; /* Hide scrollbar in Chrome, Safari and Opera */
+}
+
+.category-nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 1rem;
+}
+
+.category-nav-list li {
+  white-space: nowrap;
+}
+
+.category-nav-list li button {
+  background: none;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--text-color);
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease;
+}
+
+.category-nav-list li button:hover {
+  background-color: var(--background-light);
+}
+
+.category-nav-list li.active button {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 500;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -802,6 +850,12 @@ main {
     margin: 0.5rem 0;
   }
   
+  .category-nav {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 0;
+  }
+  
   .header-actions {
     width: 100%;
     justify-content: space-between;
@@ -857,7 +911,13 @@ main {
   .theme-toggle {
     padding: 0.4rem;
   }
+  
+  .category-nav-list li button {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
 }
+
 /* Form styling */
 .form-error {
   background-color: #ffebee;
