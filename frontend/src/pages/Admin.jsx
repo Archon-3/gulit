@@ -400,7 +400,169 @@ export default function Admin({ onLogout, currentUser }) {
                 </table>
               </div>
 
-          
+              <div className="dashboard-section">
+                <div className="section-header">
+                  <h3>Recent Users</h3>
+                  <Link to="#" className="view-all" onClick={() => setActiveTab("users")}>
+                    View All
+                  </Link>
+                </div>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <td>ID</td>
+                      <td>Name/Email</td>
+                      <td>Joined</td>
+                      <td>Products</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.slice(0, 5).map((user) => (
+                      <tr key={user.id}>
+                        <td>#{user.id}</td>
+                        <td>{user.name || user.email}</td>
+                        <td>{user.created_at || "N/A"}</td>
+                        <td>{user.product_count || 0}</td>
+                      </tr>
+                    ))}
+                    {users.length === 0 && (
+                      <tr>
+                        <td colSpan="4" className="empty-cell">
+                          No users found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Category Distribution */}
+            {stats.categoryCounts && Object.keys(stats.categoryCounts).length > 0 && (
+              <div className="dashboard-section full-width">
+                <div className="section-header">
+                  <h3>Category Distribution</h3>
+                </div>
+                <div className="category-stats">
+                  {Object.entries(stats.categoryCounts).map(([category, count]) => (
+                    <div className="category-stat-item" key={category}>
+                      <div className="category-name">{category.charAt(0).toUpperCase() + category.slice(1)}</div>
+                      <div className="category-bar-container">
+                        <div
+                          className="category-bar"
+                          style={{
+                            width: `${(count / stats.totalProducts) * 100}%`,
+                            backgroundColor: getCategoryColor(category),
+                          }}
+                        ></div>
+                      </div>
+                      <div className="category-count">{count}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Products */}
+        {activeTab === "products" && (
+          <div className="admin-products">
+            <div className="table-actions">
+              <button className="refresh-button" onClick={fetchProducts}>
+                <RefreshCw size={16} />
+                <span>Refresh</span>
+              </button>
+            </div>
+
+            <div className="table-container">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <td onClick={() => requestSort("id")}>
+                      ID
+                      {sortConfig.key === "id" && (
+                        <span>
+                          {sortConfig.direction === "ascending" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </span>
+                      )}
+                    </td>
+                    <td onClick={() => requestSort("name")}>
+                      Name
+                      {sortConfig.key === "name" && (
+                        <span>
+                          {sortConfig.direction === "ascending" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </span>
+                      )}
+                    </td>
+                    <td onClick={() => requestSort("price")}>
+                      Price
+                      {sortConfig.key === "price" && (
+                        <span>
+                          {sortConfig.direction === "ascending" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </span>
+                      )}
+                    </td>
+                    <td onClick={() => requestSort("category")}>
+                      Category
+                      {sortConfig.key === "category" && (
+                        <span>
+                          {sortConfig.direction === "ascending" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </span>
+                      )}
+                    </td>
+                    <td onClick={() => requestSort("user_id")}>
+                      Seller ID
+                      {sortConfig.key === "user_id" && (
+                        <span>
+                          {sortConfig.direction === "ascending" ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                        </span>
+                      )}
+                    </td>
+                    <td>Actions</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan="6" className="loading-cell">
+                        Loading...
+                      </td>
+                    </tr>
+                  ) : getSortedAndFilteredItems(products).length === 0 ? (
+                    <tr>
+                      <td colSpan="6" className="empty-cell">
+                        No products found
+                      </td>
+                    </tr>
+                  ) : (
+                    getSortedAndFilteredItems(products).map((product) => (
+                      <tr key={product.id}>
+                        <td>#{product.id}</td>
+                        <td>{product.name}</td>
+                        <td>${Number.parseFloat(product.price).toFixed(2)}</td>
+                        <td>{product.category || "Uncategorized"}</td>
+                        <td>{product.user_id}</td>
+                        <td>
+                          <div className="table-actions">
+                            <button
+                              className="delete-button"
+                              onClick={() => handleDeleteProduct(product.id)}
+                              disabled={isLoading}
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* Users */}
         {activeTab === "users" && (
           <div className="admin-users">
