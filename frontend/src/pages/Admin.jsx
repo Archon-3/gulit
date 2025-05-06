@@ -292,6 +292,36 @@ export default function Admin({ onLogout, currentUser }) {
         </div>
       </aside>
 
+      {/* Main Content */}
+      <main className="admin-main">
+        {/* Header */}
+        <header className="admin-header">
+          <h1>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}</h1>
+          <div className="admin-header-actions">
+            <div className="admin-search">
+              <Search size={20} />
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="admin-user">
+              <span>{currentUser?.name || currentUser?.email}</span>
+            </div>
+          </div>
+        </header>
+
+        {/* Notification */}
+        {notification && (
+          <div className={`admin-notification ${notification.type}`}>
+            {notification.type === "success" ? <CheckCircle size={20} /> : <AlertTriangle size={20} />}
+            <span>{notification.message}</span>
+          </div>
+        )}
+
+     
           
           
         {/* Users */}
