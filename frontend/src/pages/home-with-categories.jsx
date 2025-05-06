@@ -726,3 +726,107 @@ return (
                       <Settings size={18} />
                       <span>Profile Settings</span>
                     </div>
+                      {/* Only show Admin Dashboard link for admin users */}
+                                          {(loggedInUser?.isAdmin || loggedInUser?.email === "abeni@gmail.com") && (
+                                            <Link
+                                              to="/admin"
+                                              className="profile-dropdown-item"
+                                              onClick={() => setShowProfileDropdown(false)}
+                                              style={{
+                                                padding: "0.75rem 1rem",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: "0.5rem",
+                                                cursor: "pointer",
+                                                transition: "background-color var(--transition-speed)",
+                                                textDecoration: "none",
+                                                color: "var(--text-color)",
+                                              }}
+                                            >
+                                              <Users size={18} />
+                                              <span>Admin Dashboard</span>
+                                            </Link>
+                                          )}
+                      
+                                          <div
+                                            className="profile-dropdown-item"
+                                            onClick={() => {
+                                              setShowAddItemModal(true)
+                                              setShowProfileDropdown(false)
+                                            }}
+                                            style={{
+                                              padding: "0.75rem 1rem",
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap: "0.5rem",
+                                              cursor: "pointer",
+                                              transition: "background-color var(--transition-speed)",
+                                            }}
+                                          >
+                                            <PlusCircle size={18} />
+                                            <span>Add Item</span>
+                                          </div>
+                      
+                                          <div
+                                            className="profile-dropdown-item"
+                                            onClick={() => {
+                                              setShowMyItemsModal(true)
+                                              setShowProfileDropdown(false)
+                                            }}
+                                            style={{
+                                              padding: "0.75rem 1rem",
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap: "0.5rem",
+                                              cursor: "pointer",
+                                              transition: "background-color var(--transition-speed)",
+                                            }}
+                                          >
+                                            <Package size={18} />
+                                            <span>My Items</span>
+                                          </div>
+                      
+                                          <div
+                                            className="profile-dropdown-item"
+                                            style={{
+                                              padding: "0.75rem 1rem",
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap: "0.5rem",
+                                              cursor: "pointer",
+                                              transition: "background-color var(--transition-speed)",
+                                            }}
+                                          >
+                                            <ShoppingBag size={18} />
+                                            <span>Order History</span>
+                                          </div>
+                      
+                                          <div
+                                            className="profile-dropdown-item"
+                                            onClick={handleLogout}
+                                            style={{
+                                              padding: "0.75rem 1rem",
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap: "0.5rem",
+                                              cursor: "pointer",
+                                              transition: "background-color var(--transition-speed)",
+                                              borderTop: "1px solid var(--border-color)",
+                                            }}
+                                          >
+                                            <LogOut size={18} />
+                                            <span>Logout</span>
+                                          </div>
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
+                                  </div>
+                                ) : (
+                                  <button className="login-button" onClick={() => setShowLoginModal(true)}>
+                                    <User size={20} />
+                                    <span>Login</span>
+                                  </button>
+                                )}
+                              </div>
+                            </header>
+                      
