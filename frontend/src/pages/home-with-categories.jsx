@@ -619,3 +619,22 @@ export default function Home({ onLogout, currentUser }) {
       setFilteredItems([])
       return
     }
+// Filter ALL marketplace items based on search query, not just displayed ones
+const query = searchQuery.toLowerCase().trim()
+const filtered = marketplaceItems.filter(
+  (item) =>
+    item.name.toLowerCase().includes(query) || (item.description && item.description.toLowerCase().includes(query)),
+)
+setFilteredItems(filtered)
+}, [searchQuery, marketplaceItems])
+
+// Add a function to handle search input changes
+const handleSearchChange = (e) => {
+setSearchQuery(e.target.value)
+}
+
+// Add a function to handle search form submission
+const handleSearchSubmit = (e) => {
+e.preventDefault()
+// The filtering is already handled by the useEffect
+}
