@@ -1,3 +1,4 @@
+## GULIT_SHOP
 Gulit Ethiopian e-commerce platform.
 Gulit is a powerful e-commerce platform built exclusively for Ethiopia, designed to let users list, manage, and purchase a wide variety of properties and materials. With a seamless marketplace experience, Gulit makes it easy for customers to discover, add to cart, and securely buy the items they need — all in one place.
 

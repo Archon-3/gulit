@@ -1,97 +1,63 @@
 <?php
-// Enable CORS
+// Log requests for debugging
+file_put_contents('debug.log', date('Y-m-d H:i:s') . ' ' . $_SERVER['REQUEST_METHOD'] . " request to signup.php\n", FILE_APPEND);
+
+// Set CORS headers
 header("Access-Control-Allow-Origin: http://localhost:5173");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Content-Type: application/json");
+
+// Handle OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    file_put_contents('debug.log', date('Y-m-d H:i:s') . " OPTIONS request handled\n", FILE_APPEND);
+    http_response_code(204);
+    exit;
+}
 
 // Include database connection
 require_once 'config.php';
 
-// Check if the request method is POST
+// Handle POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get JSON data from request body
-    $json_data = file_get_contents('php://input');
-    $data = json_decode($json_data, true);
-    
-    // Check if required fields are present
-    if (isset($data['email']) && isset($data['password']) && isset($data['name'])) {
-        $email = $data['email'];
-        $password = $data['password'];
-        $name = $data['name'];
-        
-        // Check if email already exists
-        $check_stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $check_stmt->bind_param("s", $email);
-        $check_stmt->execute();
-        $check_result = $check_stmt->get_result();
-        
-        if ($check_result->num_rows > 0) {
-            // Email already exists
-            $response = [
-                'status' => 'error',
-                'message' => 'Email already registered'
-            ];
-            
-            echo json_encode($response);
-            $check_stmt->close();
-            $conn->close();
-            exit;
-        }
-        
-        $check_stmt->close();
-        
-        // Hash password
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-        
-        // Prepare SQL statement to prevent SQL injection
-        $stmt = $conn->prepare("INSERT INTO users (name, email, password, created_at) VALUES (?, ?, ?, NOW())");
-        $stmt->bind_param("sss", $name, $email, $hashed_password);
-        
-        if ($stmt->execute()) {
-            // Registration successful
-            $user_id = $stmt->insert_id;
-            
-            $response = [
-                'status' => 'success',
-                'message' => 'Registration successful',
-                'user' => [
-                    'id' => $user_id,
-                    'email' => $email,
-                    'name' => $name
-                ]
-            ];
-            
-            echo json_encode($response);
-        } else {
-            // Registration failed
-            $response = [
-                'status' => 'error',
-                'message' => 'Registration failed: ' . $stmt->error
-            ];
-            
-            echo json_encode($response);
-        }
-        
-        $stmt->close();
-    } else {
-        // Missing required fields
-        $response = [
-            'status' => 'error',
-            'message' => 'Name, email, and password are required'
-        ];
-        
-        echo json_encode($response);
+    $data = json_decode(file_get_contents("php://input"), true);
+    $email = $data['email'] ?? '';
+    $password = $data['password'] ?? '';
+
+    if (empty($email) || empty($password)) {
+        file_put_contents('debug.log', date('Y-m-d H:i:s') . " Missing signup data\n", FILE_APPEND);
+        echo json_encode(['status' => 'error', 'message' => 'Email and password required']);
+        exit;
     }
+
+    // Check if email exists
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    if ($stmt->get_result()->num_rows > 0) {
+        file_put_contents('debug.log', date('Y-m-d H:i:s') . " Email already exists: $email\n", FILE_APPEND);
+        echo json_encode(['status' => 'error', 'message' => 'Email already registered']);
+        exit;
+    }
+    $stmt->close();
+
+    // Hash password
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insert user
+    $stmt = $conn->prepare("INSERT INTO users (email, password) VALUES (?, ?)");
+    $stmt->bind_param("ss", $email, $hashed_password);
+    if ($stmt->execute()) {
+        file_put_contents('debug.log', date('Y-m-d H:i:s') . " User registered: $email\n", FILE_APPEND);
+        echo json_encode(['status' => 'success', 'message' => 'Registration successful']);
+    } else {
+        file_put_contents('debug.log', date('Y-m-d H:i:s') . " Registration failed: " . $conn->error . "\n", FILE_APPEND);
+        echo json_encode(['status' => 'error', 'message' => 'Registration failed']);
+    }
+    $stmt->close();
 } else {
-    // Invalid request method
-    $response = [
-        'status' => 'error',
-        'message' => 'Invalid request method'
-    ];
-    
-    echo json_encode($response);
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method']);
 }
 
-// Close database connection
 $conn->close();
 ?>
