@@ -387,7 +387,32 @@ export default function OnboardingPage({ onLogin }) {
           </div>
         </section>
 
-        
+        <section className="popular-section">
+          <h2>Popular Items</h2>
+          <div className="section-header">
+            <p>Trending products loved by our customers</p>
+          </div>
+          <div className="popular-products-container">
+            <div className="popular-products">
+              {popularProducts.map((product) => (
+                <div className="popular-product-card" key={product.id}>
+                  <div className="popular-badge">Popular</div>
+                  <img src={product.image || "/placeholder.svg"} alt={product.name} />
+                  <div className="popular-product-content">
+                    <h3>{product.name}</h3>
+                    <p className="product-description">{product.description}</p>
+                    <div className="popular-product-footer">
+                      <p className="product-price">${product.price.toFixed(2)}</p>
+                      <button className="cart-add-button" onClick={() => setShowLoginModal(true)}>
+                        Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </main>
 
       <footer className="footer">
