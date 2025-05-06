@@ -15,6 +15,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Include database connection
 require_once '../config.php';
 
+// Check if the request method is POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get JSON data from request body
+    $json_data = file_get_contents('php://input');
+    $data = json_decode($json_data, true);
+    
+    // Check if required fields are present
+    if (isset($data['user_id'])) {
+        $user_id = $data['user_id'];
+        
+        // Don't allow deleting the admin user
+        $stmt = $conn->prepare("SELECT email FROM users WHERE id = ?");
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            if ($user['email'] === 'abeni@gmail.com') {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Cannot delete admin user'
+                ]);
+                $stmt->close();
+                $conn->close();
+                exit();
+            }
+        }
+      
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'User ID is required'
+        ]);
+    }
+} else {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Invalid request method'
+    ]);
+}
 
 // Close database connection
 $conn->close();
