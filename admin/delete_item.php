@@ -31,7 +31,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bind_param("i", $item_id);
             $stmt->execute();
             
-           
+            if ($stmt->affected_rows > 0) {
+                echo json_encode([
+                    'status' => 'success',
+                    'message' => 'Item deleted successfully'
+                ]);
+            } else {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => 'Item not found or already deleted'
+                ]);
+            }
             
             $stmt->close();
         } catch (Exception $e) {
