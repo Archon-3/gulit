@@ -638,3 +638,39 @@ const handleSearchSubmit = (e) => {
 e.preventDefault()
 // The filtering is already handled by the useEffect
 }
+return (
+    <div className={`onboarding-container ${darkTheme ? "dark-theme" : "light-theme"}`}>
+      <header className="header">
+        <div className="logo">
+          <h1>GULIT</h1>
+        </div>
+        <div className="search-bar">
+          <form onSubmit={handleSearchSubmit} style={{ display: "flex", width: "100%" }}>
+            <Search className="search-icon" size={20} />
+            <input type="text" placeholder="Search for products..." value={searchQuery} onChange={handleSearchChange} />
+          </form>
+        </div>
+        <div className="header-actions">
+          <button className="theme-toggle" onClick={toggleTheme}>
+            {darkTheme ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          <div className="language-selector" onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}>
+            <Globe size={20} />
+            <span>{language}</span>
+            <ChevronDown size={16} />
+            {showLanguageDropdown && (
+              <div className="language-dropdown">
+                {languages.map((lang) => (
+                  <div
+                    key={lang}
+                    className="language-option"
+                    onClick={() => {
+                      setLanguage(lang)
+                      setShowLanguageDropdown(false)
+                    }}
+                  >
+                    {lang}
+                  </div>
+                ))}
+              </div>
+            )}
