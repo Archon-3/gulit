@@ -383,93 +383,14 @@ export default function OnboardingPage({ onLogin }) {
             <p>Limited time offers on our best products</p>
           </div>
           <div className="special-deals">
-            {specialDeals.map((deal) => (
-              <div className="deal-card" key={deal.id}>
-                <div className="deal-badge">SPECIAL OFFER</div>
-                <div className="deal-discount-badge">
-                  {Math.round(((deal.originalPrice - deal.salePrice) / deal.originalPrice) * 100)}% OFF
-                </div>
-                <img src={deal.image || "/placeholder.svg"} alt={deal.name} />
-                <div className="deal-content">
-                  <h3>{deal.name}</h3>
-                  <p className="product-description">{deal.description}</p>
-                  <div className="deal-price">
-                    <p className="original-price">${deal.originalPrice.toFixed(2)}</p>
-                    <p className="sale-price">${deal.salePrice.toFixed(2)}</p>
-                  </div>
-                  <div className="product-actions">
-                    <button className="buy-button" onClick={() => setShowLoginModal(true)}>
-                      Buy Now
-                    </button>
-                    <button className="cart-add-button" onClick={() => setShowLoginModal(true)}>
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+           
           </div>
         </section>
 
-        <section className="popular-section">
-          <h2>Popular Items</h2>
-          <div className="section-header">
-            <p>Trending products loved by our customers</p>
-          </div>
-          <div className="popular-products-container">
-            <div className="popular-products">
-              {popularProducts.map((product) => (
-                <div className="popular-product-card" key={product.id}>
-                  <div className="popular-badge">Popular</div>
-                  <img src={product.image || "/placeholder.svg"} alt={product.name} />
-                  <div className="popular-product-content">
-                    <h3>{product.name}</h3>
-                    <p className="product-description">{product.description}</p>
-                    <div className="popular-product-footer">
-                      <p className="product-price">${product.price.toFixed(2)}</p>
-                      <button className="cart-add-button" onClick={() => setShowLoginModal(true)}>
-                        Add to Cart
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        
       </main>
 
-      <footer className="footer">
-        <div className="footer-section">
-          <h3>About Us</h3>
-          <p>GULIT is your one-stop destination for the latest technology products and accessories.</p>
-        </div>
-        <div className="footer-section">
-          <h3>Customer Service</h3>
-          <ul>
-            <li>Contact Us</li>
-            <li>Shipping Policy</li>
-            <li>Returns & Refunds</li>
-            <li>FAQ</li>
-          </ul>
-        </div>
-        <div className="footer-section">
-          <h3>My Account</h3>
-          <ul>
-            <li>Sign In</li>
-            <li>View Cart</li>
-            <li>Order History</li>
-            <li>Track Order</li>
-          </ul>
-        </div>
-        <div className="footer-section">
-          <h3>Contact Info</h3>
-          <p>Email: support@Gulitshop.com</p>
-          <p>Phone: (555) 123-4567</p>
-          <p>Address: 123 Tech Street, Digital City</p>
-        </div>
-      </footer>
-
+ 
       {showLoginModal && (
         <div className="modal-overlay">
           <div className="login-modal">
@@ -498,30 +419,7 @@ export default function OnboardingPage({ onLogin }) {
                 </div>
               )}
 
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
+            
               <div className="form-actions">
                 <button type="submit" className="login-submit" disabled={isLoading}>
                   {isLoading ? "Please wait..." : isLoginForm ? "Login" : "Sign Up"}
