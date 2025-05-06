@@ -1,20 +1,33 @@
 <?php
-// Enable CORS
+// ⚠️ No space or newline before this tag
+// Log requests for debugging
+file_put_contents('debug.log', date('Y-m-d H:i:s') . ' ' . $_SERVER['REQUEST_METHOD'] . " request to login.php\n", FILE_APPEND);
+
+// 1. Set CORS headers for all responses
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Content-Type: application/json");
 
-// Include database connection
+// 2. Handle preflight OPTIONS request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    file_put_contents('debug.log', date('Y-m-d H:i:s') . " OPTIONS request handled\n", FILE_APPEND);
+    header("Access-Control-Max-Age: 86400");
+    http_response_code(204);
+    exit();
+}
+
+// 3. Include database connection
 require_once 'config.php';
 
-// Check if the request method is POST
+// 4. Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get JSON data from request body
     $json_data = file_get_contents('php://input');
     $data = json_decode($json_data, true);
     
     // Check if required fields are present
-    if (isset($data['email']) && isset($data['password'])) {
+    if (isset($data['email'], $data['password'])) {
         $email = $data['email'];
         $password = $data['password'];
         
@@ -28,56 +41,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $result->fetch_assoc();
             // Verify password
             if (password_verify($password, $user['password'])) {
-                // Password is correct, generate session data
-                $response = [
+                file_put_contents('debug.log', date('Y-m-d H:i:s') . " Login successful for {$email}\n", FILE_APPEND);
+                echo json_encode([
                     'status' => 'success',
                     'message' => 'Login successful',
                     'user' => [
                         'id' => $user['id'],
                         'email' => $user['email']
                     ]
-                ];
-                
-                echo json_encode($response);
+                ]);
             } else {
-                // Invalid password
-                $response = [
+                file_put_contents('debug.log', date('Y-m-d H:i:s') . " Invalid password for {$email}\n", FILE_APPEND);
+                echo json_encode([
                     'status' => 'error',
                     'message' => 'Invalid email or password'
-                ];
-                
-                echo json_encode($response);
+                ]);
             }
         } else {
-            // User not found
-            $response = [
+            file_put_contents('debug.log', date('Y-m-d H:i:s') . " User not found: {$email}\n", FILE_APPEND);
+            echo json_encode([
                 'status' => 'error',
                 'message' => 'Invalid email or password'
-            ];
-            
-            echo json_encode($response);
+            ]);
         }
         
         $stmt->close();
     } else {
-        // Missing required fields
-        $response = [
+        file_put_contents('debug.log', date('Y-m-d H:i:s') . " Missing email or password\n", FILE_APPEND);
+        echo json_encode([
             'status' => 'error',
             'message' => 'Email and password are required'
-        ];
-        
-        echo json_encode($response);
+        ]);
     }
 } else {
-    // Invalid request method
-    $response = [
+    file_put_contents('debug.log', date('Y-m-d H:i:s') . " Invalid request method\n", FILE_APPEND);
+    echo json_encode([
         'status' => 'error',
         'message' => 'Invalid request method'
-    ];
-    
-    echo json_encode($response);
+    ]);
 }
 
-// Close database connection
+// 5. Close database connection
 $conn->close();
 ?>
