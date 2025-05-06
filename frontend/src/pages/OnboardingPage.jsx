@@ -390,7 +390,37 @@ export default function OnboardingPage({ onLogin }) {
         
       </main>
 
- 
+      <footer className="footer">
+        <div className="footer-section">
+          <h3>About Us</h3>
+          <p>GULIT is your one-stop destination for the latest technology products and accessories.</p>
+        </div>
+        <div className="footer-section">
+          <h3>Customer Service</h3>
+          <ul>
+            <li>Contact Us</li>
+            <li>Shipping Policy</li>
+            <li>Returns & Refunds</li>
+            <li>FAQ</li>
+          </ul>
+        </div>
+        <div className="footer-section">
+          <h3>My Account</h3>
+          <ul>
+            <li>Sign In</li>
+            <li>View Cart</li>
+            <li>Order History</li>
+            <li>Track Order</li>
+          </ul>
+        </div>
+        <div className="footer-section">
+          <h3>Contact Info</h3>
+          <p>Email: support@Gulitshop.com</p>
+          <p>Phone: (555) 123-4567</p>
+          <p>Address: 123 Tech Street, Digital City</p>
+        </div>
+      </footer>
+
       {showLoginModal && (
         <div className="modal-overlay">
           <div className="login-modal">
