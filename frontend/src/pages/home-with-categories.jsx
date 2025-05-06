@@ -148,3 +148,434 @@ export default function Home({ onLogout, currentUser }) {
 
     return () => clearInterval(interval)
   }, [])
+  // Fetch user items from backend
+  const fetchUserItems = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost/gulit/get_items.php?user_id=${userId}`)
+      const data = await response.json()
+
+      if (data.status === "success") {
+        setUserItems(data.items)
+      } else {
+        console.error("Failed to fetch items:", data.message)
+      }
+    } catch (error) {
+      console.error("Error fetching items:", error)
+    }
+  }
+
+  // Add a new function to fetch all marketplace items
+  const fetchMarketplaceItems = async () => {
+    try {
+      const response = await fetch("http://localhost/gulit/get_items.php")
+      const data = await response.json()
+
+      if (data.status === "success") {
+        setMarketplaceItems(data.items)
+      } else {
+        console.error("Failed to fetch marketplace items:", data.message)
+      }
+    } catch (error) {
+      console.error("Error fetching marketplace items:", error)
+    }
+  }
+
+  const toggleTheme = () => {
+    setDarkTheme(!darkTheme)
+  }
+
+  const handleLogout = () => {
+    // Update cart context to clear the cart
+    updateUserId(null)
+    onLogout()
+    navigate("/")
+  }
+
+  // Handle category change
+  const handleCategoryChange = (category) => {
+    setActiveCategory(category)
+    // Update URL with the category parameter
+    const params = new URLSearchParams(location.search)
+    params.set("category", category)
+    navigate(`${location.pathname}?${params.toString()}`)
+  }
+
+  // Update the handleAddItem function to also refresh marketplace items
+  const handleAddItem = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setFormError("")
+    setFormSuccess("")
+
+    // Validate form
+    if (!newItem.name || !newItem.description || !newItem.price || !newItem.category) {
+      setFormError("Please fill all required fields")
+      setIsLoading(false)
+      return
+    }
+
+    try {
+      const formData = new FormData()
+      formData.append("name", newItem.name)
+      formData.append("description", newItem.description)
+      formData.append("price", newItem.price)
+      formData.append("category", newItem.category)
+      formData.append("user_id", loggedInUser.id)
+
+      // If editing an item, include the item ID
+      if (itemToEdit) {
+        formData.append("item_id", itemToEdit.id)
+      }
+
+      // If image is a URL, send it as is
+      if (newItem.image && newItem.image.startsWith("http")) {
+        formData.append("image_url", newItem.image)
+      } else if (newItem.image) {
+        // If image is a file, it would be handled here
+        // This would require a file input in the form
+        // formData.append("image_file", newItem.image)
+      }
+
+      const endpoint = itemToEdit ? "http://localhost/gulit/update_item.php" : "http://localhost/gulit/add_item.php"
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: formData,
+      })
+
+      const data = await response.json()
+
+      if (data.status === "success") {
+        setFormSuccess(itemToEdit ? "Item updated successfully!" : "Item added successfully!")
+
+        // Refresh user items
+        fetchUserItems(loggedInUser.id)
+
+        // Refresh marketplace items
+        fetchMarketplaceItems()
+
+        // Reset form and close modal after a delay
+        setTimeout(() => {
+          setNewItem({
+            name: "",
+            description: "",
+            price: "",
+            image: "",
+            category: "electronics",
+          })
+          setItemToEdit(null)
+          setShowAddItemModal(false)
+          setFormSuccess("")
+        }, 1500)
+      } else {
+        setFormError(data.message || "An error occurred")
+      }
+    } catch (error) {
+      setFormError("An error occurred. Please try again.")
+      console.error("Add/Update item error:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Update the handleDeleteItem function to also refresh marketplace items
+  const handleDeleteItem = async () => {
+    if (!itemToDelete) return
+
+    setIsLoading(true)
+
+    try {
+      const response = await fetch("http://localhost/gulit/delete_item.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          item_id: itemToDelete.id,
+          user_id: loggedInUser.id,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.status === "success") {
+        // Remove item from local state
+        setUserItems(userItems.filter((item) => item.id !== itemToDelete.id))
+
+        // Refresh marketplace items
+        fetchMarketplaceItems()
+
+        setShowDeleteConfirmModal(false)
+        setItemToDelete(null)
+      } else {
+        alert(data.message || "Failed to delete item")
+      }
+    } catch (error) {
+      console.error("Delete item error:", error)
+      alert("An error occurred while deleting the item")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleEditItem = (item) => {
+    setItemToEdit(item)
+    setNewItem({
+      name: item.name,
+      description: item.description,
+      price: item.price,
+      image: item.image,
+      category: item.category || "electronics",
+    })
+    setShowAddItemModal(true)
+    setShowMyItemsModal(false)
+  }
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault()
+    setIsLoading(true)
+    setFormError("")
+    setFormSuccess("")
+
+    // Validate form
+    if (!profileData.name || !profileData.email) {
+      setFormError("Name and email are required")
+      setIsLoading(false)
+      return
+    }
+
+    // If changing password, validate password fields
+    if (profileData.newPassword) {
+      if (!profileData.currentPassword) {
+        setFormError("Current password is required to set a new password")
+        setIsLoading(false)
+        return
+      }
+
+      if (profileData.newPassword.length < 6) {
+        setFormError("New password must be at least 6 characters")
+        setIsLoading(false)
+        return
+      }
+
+      if (profileData.newPassword !== profileData.confirmPassword) {
+        setFormError("New passwords do not match")
+        setIsLoading(false)
+        return
+      }
+    }
+
+    try {
+      const response = await fetch("http://localhost/gulit/update_profile.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: loggedInUser.id,
+          name: profileData.name,
+          email: profileData.email,
+          current_password: profileData.currentPassword,
+          new_password: profileData.newPassword || null,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.status === "success") {
+        setFormSuccess("Profile updated successfully!")
+
+        // Update local user data
+        const updatedUser = {
+          ...loggedInUser,
+          name: profileData.name,
+          email: profileData.email,
+        }
+
+        setLoggedInUser(updatedUser)
+        localStorage.setItem("user", JSON.stringify(updatedUser))
+
+        // Reset password fields
+        setProfileData({
+          ...profileData,
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        })
+
+        // Close modal after a delay
+        setTimeout(() => {
+          setShowProfileSettingsModal(false)
+          setFormSuccess("")
+        }, 1500)
+      } else {
+        setFormError(data.message || "Failed to update profile")
+      }
+    } catch (error) {
+      setFormError("An error occurred. Please try again.")
+      console.error("Update profile error:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleInputChange = (e) => {
+    const { id, value } = e.target
+    setNewItem({
+      ...newItem,
+      [id]: value,
+    })
+  }
+
+  const handleProfileInputChange = (e) => {
+    const { id, value } = e.target
+    setProfileData({
+      ...profileData,
+      [id]: value,
+    })
+  }
+   // Product data
+   const featuredProducts = [
+    {
+      id: 1,
+      name: "Wireless Headphones",
+      description: "Premium noise-cancelling wireless headphones with 30-hour battery life",
+      price: 199.99,
+      image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=200&h=200&auto=format&fit=crop",
+    },
+    {
+      id: 2,
+      name: "Smart Watch",
+      description: "Track your fitness, sleep, and notifications with this sleek smartwatch",
+      price: 249.99,
+      image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?q=80&w=200&h=200&auto=format&fit=crop",
+    },
+    {
+      id: 3,
+      name: "Portable Speaker",
+      description: "Waterproof Bluetooth speaker with immersive 360° sound",
+      price: 129.99,
+      image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?q=80&w=200&h=200&auto=format&fit=crop",
+    },
+    {
+      id: 4,
+      name: "Laptop Backpack",
+      description: "Anti-theft backpack with USB charging port and laptop compartment",
+      price: 79.99,
+      image: "https://images.unsplash.com/photo-1581605405669-fcdf81165afa?q=80&w=200&h=200&auto=format&fit=crop",
+    },
+  ]
+
+  const specialDeals = [
+    {
+      id: 5,
+      name: "Premium Smartphone",
+      description: "Latest model with advanced camera system and all-day battery life",
+      originalPrice: 999.99,
+      salePrice: 849.99,
+      image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=300&h=300&auto=format&fit=crop",
+    },
+    {
+      id: 6,
+      name: "Wireless Earbuds",
+      description: "True wireless earbuds with active noise cancellation",
+      originalPrice: 179.99,
+      salePrice: 129.99,
+      image:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeuj8focJiIvgsHrWuHv4UeJ_QbWQoP0sDzg&s?q=50&w=200&h=200&auto=format&fit=crop",
+    },
+    {
+      id: 7,
+      name: "Gaming Console",
+      description: "Next-gen gaming console with 4K graphics and 1TB storage",
+      originalPrice: 499.99,
+      salePrice: 449.99,
+      image: "/placeholder.svg",
+    },
+  ]
+
+  const popularProducts = [
+    {
+      id: 8,
+      name: "Coffee Maker",
+      description: "Programmable coffee maker with thermal carafe",
+      price: 89.99,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf_4-Ij8GSWN21qTjfeXKpuR3W_wEer8IgUQ&s",
+    },
+    {
+      id: 9,
+      name: "Fitness Tracker",
+      description: "Track steps, heart rate, and sleep quality",
+      price: 69.99,
+      image: "/placeholder.svg",
+    },
+    {
+      id: 10,
+      name: "Wireless Charger",
+      description: "Fast wireless charging pad for smartphones",
+      price: 39.99,
+      image: "/placeholder.svg",
+    },
+    {
+      id: 11,
+      name: "Bluetooth Speaker",
+      description: "Compact speaker with powerful bass",
+      price: 59.99,
+      image: "https://images.unsplash.com/photo-1589003077984-894e133dabab?q=80&w=150&h=150&auto=format&fit=crop",
+    },
+    {
+      id: 12,
+      name: "Smart Bulb Set",
+      description: "Color-changing smart bulbs with voice control",
+      price: 49.99,
+      image: "/placeholder.svg",
+    },
+    {
+      id: 13,
+      name: "Portable Power Bank",
+      description: "20,000mAh high-capacity power bank",
+      price: 45.99,
+      image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlhVZhPG-TFKycQHIShCb6RzbM7AxngXupCA&s",
+    },
+  ]
+
+  // Animation variants for framer-motion
+  const dealCardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 24,
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: -50,
+      transition: {
+        duration: 0.3,
+      },
+    },
+  }
+
+  const dropdownVariants = {
+    hidden: { opacity: 0, y: -10, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.2,
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: -10,
+      scale: 0.95,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  }
