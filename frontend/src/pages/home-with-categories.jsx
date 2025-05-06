@@ -829,4 +829,34 @@ return (
                                 )}
                               </div>
                             </header>
-                      
+                      {/* New Category Navigation */}
+      <nav className="category-nav">
+        <div className="category-container">
+          <button
+            className={`category-link ${activeCategory === "explore" ? "active" : ""}`}
+            onClick={() => handleCategoryChange("explore")}
+          >
+            <Compass size={18} />
+            <span>Explore</span>
+          </button>
+
+          {categories.map((category) => (
+            <button
+              key={category}
+              className={`category-link ${activeCategory === category ? "active" : ""}`}
+              onClick={() => handleCategoryChange(category)}
+            >
+              <span>{category.charAt(0).toUpperCase() + category.slice(1)}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      <main>
+        <section className="hero-section">
+          <div className="hero-content">
+            <h1>Welcome to Gulit</h1>
+            <p>Discover the latest tech products at unbeatable prices</p>
+            <button className="cta-button">Shop Now</button>
+          </div>
+        </section>
