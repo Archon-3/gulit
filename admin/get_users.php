@@ -58,7 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             'message' => 'Failed to fetch users: ' . $e->getMessage()
         ]);
     }
-} 
+} else {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Invalid request method'
+    ]);
+}
 
 // Close database connection
 $conn->close();
