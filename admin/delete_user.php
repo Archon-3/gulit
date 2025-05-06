@@ -43,7 +43,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit();
             }
         }
-      
+        
+        try {
+            // Start transaction
+            $conn->begin_transaction();
+            
+            // First delete all items from this user
+            $stmt = $conn->prepare("DELETE FROM items WHERE user_id = ?");
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            $itemsDeleted = $stmt->affected_rows;
+            $stmt->close();
+            
+            // Then delete the user
+            $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
+            $stmt->bind_param("i", $user_id);
+            $stmt->execute();
+            
+       
+            
+            $stmt->close();
+        } catch (Exception $e) {
+            // Rollback transaction on error
+            $conn->rollback();
+            
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to delete user: ' . $e->getMessage()
+            ]);
+        }
     } else {
         echo json_encode([
             'status' => 'error',
