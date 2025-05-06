@@ -15,6 +15,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // Include database connection
 require_once '../config.php';
 
+// Check if the request method is POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get JSON data from request body
+    $json_data = file_get_contents('php://input');
+    $data = json_decode($json_data, true);
+    
+  
+} else {
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Invalid request method'
+    ]);
+}
 
 // Close database connection
 $conn->close();
