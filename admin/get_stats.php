@@ -46,7 +46,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $categoryCounts[$category] = (int)$row['count'];
         }
 
-      
+        // Prepare response
+        $stats = [
+            'totalUsers' => (int)$totalUsers,
+            'totalProducts' => (int)$productStats['total_products'],
+            'totalValue' => (float)$productStats['total_value'],
+            'avgPrice' => (float)$productStats['avg_price'],
+            'categoryCounts' => $categoryCounts
+        ];
+
+        echo json_encode([
+            'status' => 'success',
+            'stats' => $stats
+        ]);
     } catch (Exception $e) {
         echo json_encode([
             'status' => 'error',
