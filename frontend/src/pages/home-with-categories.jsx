@@ -860,3 +860,75 @@ return (
             <button className="cta-button">Shop Now</button>
           </div>
         </section>
+        {searchQuery.trim() !== "" && (
+          <section className="featured-section">
+            <h2>Search Results</h2>
+            <div className="section-header">
+              <p>
+                {filteredItems.length > 0
+                  ? `Found ${filteredItems.length} item${filteredItems.length === 1 ? "" : "s"} for "${searchQuery}"`
+                  : `No items found for "${searchQuery}"`}
+              </p>
+            </div>
+            {filteredItems.length > 0 ? (
+              <div className="featured-products">
+                {filteredItems.map((product) => (
+                  <div className="product-card" key={product.id}>
+                    <img src={product.image || "/placeholder.svg"} alt={product.name} />
+                    <h3>{product.name}</h3>
+                    <p className="product-description">{product.description}</p>
+                    <p className="product-price">${Number.parseFloat(product.price).toFixed(2)}</p>
+                    <div className="product-actions">
+                      <button className="buy-button">Buy Now</button>
+                      <button className="cart-add-button" onClick={() => addToCart(product)}>
+                        Add to Cart
+                      </button>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "var(--text-secondary)",
+                        marginTop: "0.5rem",
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span>
+                        Category:{" "}
+                        {product.category
+                          ? product.category.charAt(0).toUpperCase() + product.category.slice(1)
+                          : "Electronics"}
+                      </span>
+                      {product.user_id === loggedInUser?.id && (
+                        <span
+                          style={{
+                            backgroundColor: "var(--primary-color)",
+                            color: "white",
+                            padding: "0.2rem 0.5rem",
+                            borderRadius: "4px",
+                            fontSize: "0.7rem",
+                          }}
+                        >
+                          Your Item
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "2rem",
+                  backgroundColor: "var(--background-card)",
+                  borderRadius: "var(--border-radius)",
+                  marginBottom: "2rem",
+                }}
+              >
+                <p>No items match your search. Try different keywords or browse our categories.</p>
+              </div>
+            )}
+          </section>
+        )}
