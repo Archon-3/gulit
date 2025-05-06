@@ -1136,3 +1136,68 @@ return (
                 </div>
               </section>
             )}
+            {/* Only show "Your Items" section if the user has items */}
+            {userItems.length > 0 && (
+              <section className="featured-section">
+                <h2>Your Items</h2>
+                <div className="featured-products">
+                  {userItems.map((product) => (
+                    <div className="product-card" key={product.id}>
+                      <img src={product.image || "/placeholder.svg"} alt={product.name} />
+                      <h3>{product.name}</h3>
+                      <p className="product-description">{product.description}</p>
+                      <p className="product-price">${Number.parseFloat(product.price).toFixed(2)}</p>
+                      <div className="product-actions">
+                        <button
+                          className="buy-button"
+                          onClick={() => handleEditItem(product)}
+                          style={{ backgroundColor: "var(--primary-color)" }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="cart-add-button"
+                          onClick={() => {
+                            setItemToDelete(product)
+                            setShowDeleteConfirmModal(true)
+                          }}
+                          style={{ backgroundColor: "#ef4444" }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <section className="popular-section">
+              <h2>Popular Items</h2>
+              <div className="section-header">
+                <p>Trending products loved by our customers</p>
+              </div>
+              <div className="popular-products-container">
+                <div className="popular-products">
+                  {popularProducts.map((product) => (
+                    <div className="popular-product-card" key={product.id}>
+                      <div className="popular-badge">Popular</div>
+                      <img src={product.image || "/placeholder.svg"} alt={product.name} />
+                      <div className="popular-product-content">
+                        <h3>{product.name}</h3>
+                        <p className="product-description">{product.description}</p>
+                        <div className="popular-product-footer">
+                          <p className="product-price">${product.price.toFixed(2)}</p>
+                          <button className="cart-add-button" onClick={() => addToCart(product)}>
+                            Add to Cart
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+      </main>
