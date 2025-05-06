@@ -1,0 +1,63 @@
+/* Category Navigation Styles */
+.category-nav {
+    background-color: var(--background-card);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .category-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .category-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    white-space: nowrap;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+  }
+  
+  .category-link:hover {
+    background-color: var(--background-light);
+  }
+  
+  .category-link.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+  
+  /* Make sure the first link (Explore) stands out */
+  .category-link:first-child {
+    border-right: 1px solid var(--border-color);
+    padding-right: 1.5rem;
+    margin-right: 0.5rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .category-container {
+      padding: 0.25rem 0;
+    }
+  
+    .category-link {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.9rem;
+    }
+  }
+  
