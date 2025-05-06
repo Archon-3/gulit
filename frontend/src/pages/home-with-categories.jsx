@@ -579,3 +579,43 @@ export default function Home({ onLogout, currentUser }) {
       },
     },
   }
+ // Add this function to get a random subset of items
+  const getRandomItems = (items, count) => {
+    const shuffled = [...items].sort(() => 0.5 - Math.random())
+    return shuffled.slice(0, count)
+  }
+
+  // Add this effect to handle marketplace items rotation
+  useEffect(() => {
+    if (marketplaceItems.length > 0) {
+      // If we have more than 15 items, show only 15 random ones
+      if (marketplaceItems.length > 15) {
+        setDisplayedMarketplaceItems(getRandomItems(marketplaceItems, 15))
+      } else {
+        // If we have 15 or fewer items, show all of them
+        setDisplayedMarketplaceItems(marketplaceItems)
+      }
+    }
+  }, [marketplaceItems])
+
+  // Add this effect to rotate displayed items every 5 minutes
+  useEffect(() => {
+    const rotationInterval = 5 * 60 * 1000 // 5 minutes in milliseconds
+
+    const intervalId = setInterval(() => {
+      if (marketplaceItems.length > 15) {
+        setDisplayedMarketplaceItems(getRandomItems(marketplaceItems, 15))
+        setLastRotationTime(Date.now())
+      }
+    }, rotationInterval)
+
+    return () => clearInterval(intervalId)
+  }, [marketplaceItems])
+
+  // Add a new useEffect to handle search filtering
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      // If search is empty, don't filter
+      setFilteredItems([])
+      return
+    }
