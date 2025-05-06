@@ -51,6 +51,44 @@ export function CartProvider({ children }) {
       return
     }
 
+    // Ensure we have a valid product with an ID
+    if (!product || !product.id) {
+      console.error("Invalid product:", product)
+      return
+    }
+
+    // Convert ID to string for consistent comparison
+    const productId = String(product.id)
+
+    setCartItems((prevItems) => {
+      // Make a copy of the previous items
+      const updatedItems = [...prevItems]
+
+      // Find the index of the existing item (if any)
+      const existingItemIndex = updatedItems.findIndex((item) => String(item.id) === productId)
+
+      if (existingItemIndex >= 0) {
+        // Item exists, update its quantity
+        const updatedItem = {
+          ...updatedItems[existingItemIndex],
+          quantity: updatedItems[existingItemIndex].quantity + 1,
+        }
+        updatedItems[existingItemIndex] = updatedItem
+      } else {
+        // Item doesn't exist, add it with quantity 1
+        updatedItems.push({
+          ...product,
+          id: productId, // Ensure consistent ID format
+          quantity: 1,
+        })
+      }
+
+      // Log for debugging
+      console.log("Updated cart:", updatedItems)
+
+      return updatedItems
+    })
+  }
 
   // Remove item from cart
   const removeFromCart = (productId) => {
