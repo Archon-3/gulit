@@ -449,7 +449,30 @@ export default function OnboardingPage({ onLogin }) {
                 </div>
               )}
 
-            
+              <div className="form-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
               <div className="form-actions">
                 <button type="submit" className="login-submit" disabled={isLoading}>
                   {isLoading ? "Please wait..." : isLoginForm ? "Login" : "Sign Up"}
