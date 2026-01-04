@@ -12,3 +12,24 @@
 Designed specifically for Ethiopia’s growing digital economy, Gulit connects sellers and buyers across the country — enabling product discovery, online transactions, and nationwide reach from a single platform.
 
 ---
+
+## 🚀 Key Features
+
+| Feature | Description |
+|------|------------|
+| 🛍️ **Product Listing & Inventory Management** | Sellers can upload, edit, and manage products with real-time updates |
+| 🛒 **Smart Cart System** | Buyers can add multiple items, compare options, and proceed to checkout smoothly |
+| 🔍 **Advanced Search & Filters** | Fast and intuitive product discovery through categories and search |
+| 💳 **Secure Payments** | Safe and reliable transactions designed for Ethiopian users |
+| 🚚 **Nationwide Reach** | Connects buyers and sellers across Addis Ababa and regional markets |
+
+---
+
+## 🇪🇹 Why Choose Gulit?
+
+- ✅ **100% Ethiopian-Focused** – Built for local businesses and shoppers  
+- ⚡ **Fast & Reliable** – Optimized for performance, even on slower connections  
+- 🧭 **User-Friendly Design** – Simple navigation for all user types  
+- 🔐 **Trusted Marketplace** – Secure transactions and seller verification  
+
+---
