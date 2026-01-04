@@ -33,3 +33,37 @@ Designed specifically for Ethiopia’s growing digital economy, Gulit connects s
 - 🔐 **Trusted Marketplace** – Secure transactions and seller verification  
 
 ---
+
+## 🛠️ Tech Stack
+
+**Frontend**
+- React.js
+- Responsive UI Design
+
+**Backend**
+- PHP / Node.js (depending on deployment)
+- RESTful API architecture
+
+**Database**
+- MySQL / Relational Database
+
+---
+
+## 📌 Project Vision
+
+- Support local businesses through digital commerce  
+- Improve accessibility to online shopping across Ethiopia  
+- Build a scalable, secure marketplace platform  
+- Demonstrate real-world e-commerce system design  
+
+---
+
+## 📂 Project Status
+
+🟢 Actively under development — features and performance optimizations are ongoing.
+
+---
+
+## 📬 Contact & More
+
+📎 Full background, documentation, and related projects are available on my personal website.
